@@ -8,7 +8,7 @@ While cameras are a complex topic in AAA productions, this crate only provides b
 
 ## Examples
 
-![follow camera](media/follow.mp4)
+https://user-images.githubusercontent.com/16522064/125960266-fc96b302-6d6b-4976-b38c-b6f4fdb8e09b.mp4
 
 ```rust
 let mut camera = CameraRig::builder()
@@ -32,7 +32,7 @@ camera.update(delta_seconds);
 
 ---
 
-![orbit camera](media/orbit.mp4)
+https://user-images.githubusercontent.com/16522064/125960227-7ee05c04-f47a-4c32-b494-cc36dc70ab63.mp4
 
 ```rust
 let mut camera = CameraRig::builder()
