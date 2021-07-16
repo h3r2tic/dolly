@@ -58,6 +58,8 @@ camera.update(time_delta_seconds);
 
 ---
 
+https://user-images.githubusercontent.com/16522064/125986386-60cb9d26-06a2-4d3f-9377-56c982fbc7f9.mp4
+
 ```rust
 let mut camera = CameraRig::builder()
     .with(Positional::new(Vec3::Y * 3.0))
@@ -71,6 +73,8 @@ camera.update(time_delta_seconds);
 ```
 
 ---
+
+https://user-images.githubusercontent.com/16522064/125986405-a06f6572-702a-4c1a-a6c7-edf5ba2ed815.mp4
 
 ```rust
 let mut camera = CameraRig::builder()
