@@ -161,18 +161,38 @@ pub struct Smooth {
 
 impl Default for Smooth {
     fn default() -> Self {
-        Self::new()
-    }
-}
-
-impl Smooth {
-    pub fn new() -> Self {
         Self {
             move_smoothness: 1.0,
             look_smoothness: 1.0,
             output_offset_scale: 1.0,
             smoothed_translation: Default::default(),
             smoothed_rotation: Default::default(),
+        }
+    }
+}
+
+impl Smooth {
+    pub fn new_move(move_smoothness: f32) -> Self {
+        Self {
+            move_smoothness,
+            look_smoothness: 0.0,
+            ..Default::default()
+        }
+    }
+
+    pub fn new_look(look_smoothness: f32) -> Self {
+        Self {
+            look_smoothness,
+            move_smoothness: 0.0,
+            ..Default::default()
+        }
+    }
+
+    pub fn new_move_look(move_smoothness: f32, look_smoothness: f32) -> Self {
+        Self {
+            move_smoothness,
+            look_smoothness,
+            ..Default::default()
         }
     }
 
@@ -240,8 +260,8 @@ impl LookAt {
         }
     }
 
-    pub fn smoothness(mut self, move_smoothness: f32) -> Self {
-        self.smoothness = move_smoothness;
+    pub fn smoothness(mut self, smoothness: f32) -> Self {
+        self.smoothness = smoothness;
         self
     }
 
