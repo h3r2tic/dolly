@@ -54,10 +54,46 @@ pub trait RigDriver: std::any::Any {
     fn as_any_mut(&mut self) -> &mut dyn std::any::Any;
 }
 
+#[derive(Default)]
+pub struct Positional {
+    pub position: Vec3,
+    pub rotation: Quat,
+}
+
+impl Positional {
+    pub fn new(position: Vec3) -> Self {
+        Self {
+            position,
+            rotation: Quat::IDENTITY,
+        }
+    }
+
+    pub fn translate(&mut self, move_vec: Vec3) {
+        self.position += move_vec;
+    }
+
+    pub fn set_position_rotation(&mut self, position: Vec3, rotation: Quat) {
+        self.position = position;
+        self.rotation = rotation;
+    }
+}
+
+impl RigDriver for Positional {
+    fn update(&mut self, _: RigUpdateParams) -> Transform {
+        Transform {
+            translation: self.position,
+            rotation: self.rotation,
+        }
+    }
+
+    fn as_any_mut(&mut self) -> &mut dyn std::any::Any {
+        self
+    }
+}
+
 pub struct YawPitch {
     pub yaw_degrees: f32,
     pub pitch_degrees: f32,
-    pub position: Vec3,
 }
 
 impl Default for YawPitch {
@@ -71,13 +107,7 @@ impl YawPitch {
         Self {
             yaw_degrees: 0.0,
             pitch_degrees: 0.0,
-            position: Vec3::ZERO,
         }
-    }
-
-    pub fn position(mut self, position: Vec3) -> Self {
-        self.position = position;
-        self
     }
 
     pub fn rotation(mut self, rotation: Quat) -> Self {
@@ -101,16 +131,12 @@ impl YawPitch {
         self.pitch_degrees = (self.pitch_degrees + pitch_degrees).clamp(-90.0, 90.0);
         self.yaw_degrees = (self.yaw_degrees + yaw_degrees) % 720_f32;
     }
-
-    pub fn translate(&mut self, move_vec: Vec3) {
-        self.position += move_vec;
-    }
 }
 
 impl RigDriver for YawPitch {
-    fn update(&mut self, _: RigUpdateParams) -> Transform {
+    fn update(&mut self, params: RigUpdateParams) -> Transform {
         Transform {
-            translation: self.position,
+            translation: params.parent.translation,
             rotation: Quat::from_euler(
                 EulerRot::YXZ,
                 self.yaw_degrees.to_radians(),
@@ -128,7 +154,9 @@ impl RigDriver for YawPitch {
 pub struct Smooth {
     pub move_smoothness: f32,
     pub look_smoothness: f32,
-    pub interp_transform: Option<Transform>,
+    output_offset_scale: f32,
+    smoothed_translation: ExpSmoothed<Vec3>,
+    smoothed_rotation: ExpSmoothed<Quat>,
 }
 
 impl Default for Smooth {
@@ -142,7 +170,9 @@ impl Smooth {
         Self {
             move_smoothness: 1.0,
             look_smoothness: 1.0,
-            interp_transform: None,
+            output_offset_scale: 1.0,
+            smoothed_translation: Default::default(),
+            smoothed_rotation: Default::default(),
         }
     }
 
@@ -155,27 +185,93 @@ impl Smooth {
         self.look_smoothness = look_smoothness;
         self
     }
+
+    pub fn predictive(mut self, scale: f32) -> Self {
+        self.output_offset_scale = -scale;
+        self
+    }
 }
 
 impl RigDriver for Smooth {
     fn update(&mut self, params: RigUpdateParams) -> Transform {
-        let rot_interp = 1.0 - (-30.0 * params.dt / self.look_smoothness.max(1e-5)).exp();
-        let pos_interp = 1.0 - (-16.0 * params.dt / self.move_smoothness.max(1e-5)).exp();
+        let translation = self.smoothed_translation.exp_smooth_towards(
+            &params.parent.translation,
+            ExpSmoothingParams {
+                smoothness: self.move_smoothness,
+                output_offset_scale: self.output_offset_scale,
+                dt: params.dt,
+            },
+        );
 
-        let prev_transform = self.interp_transform.unwrap_or(*params.parent);
-        let transform = Transform {
-            rotation: prev_transform
-                .rotation
-                .slerp(params.parent.rotation, rot_interp)
-                .normalize(),
+        let rotation = self.smoothed_rotation.exp_smooth_towards(
+            &params.parent.rotation,
+            ExpSmoothingParams {
+                smoothness: self.look_smoothness,
+                output_offset_scale: self.output_offset_scale,
+                dt: params.dt,
+            },
+        );
 
-            translation: prev_transform
-                .translation
-                .lerp(params.parent.translation, pos_interp),
-        };
+        Transform {
+            translation,
+            rotation,
+        }
+    }
 
-        self.interp_transform = Some(transform);
-        transform
+    fn as_any_mut(&mut self) -> &mut dyn std::any::Any {
+        self
+    }
+}
+
+pub struct LookAt {
+    pub smoothness: f32,
+    pub target: Vec3,
+    output_offset_scale: f32,
+    smoothed_target: ExpSmoothed<Vec3>,
+}
+
+impl LookAt {
+    pub fn new(target: Vec3) -> Self {
+        Self {
+            smoothness: 0.0,
+            output_offset_scale: 1.0,
+            target,
+            smoothed_target: Default::default(),
+        }
+    }
+
+    pub fn smoothness(mut self, move_smoothness: f32) -> Self {
+        self.smoothness = move_smoothness;
+        self
+    }
+
+    pub fn predictive(mut self, scale: f32) -> Self {
+        self.output_offset_scale = -scale;
+        self
+    }
+}
+
+impl RigDriver for LookAt {
+    fn update(&mut self, params: RigUpdateParams) -> Transform {
+        let target = self.smoothed_target.exp_smooth_towards(
+            &self.target,
+            ExpSmoothingParams {
+                smoothness: self.smoothness,
+                output_offset_scale: self.output_offset_scale,
+                dt: params.dt,
+            },
+        );
+
+        Transform {
+            translation: params.parent.translation,
+            rotation: Quat::from_mat4(&glam::Mat4::look_at_rh(
+                params.parent.translation,
+                target,
+                Vec3::Y,
+            ))
+            .conjugate()
+            .normalize(),
+        }
     }
 
     fn as_any_mut(&mut self) -> &mut dyn std::any::Any {
@@ -184,12 +280,12 @@ impl RigDriver for Smooth {
 }
 
 pub struct Arm {
-    pub length: f32,
+    pub offset: Vec3,
 }
 
 impl Arm {
-    pub fn new(length: f32) -> Self {
-        Self { length }
+    pub fn new(offset: Vec3) -> Self {
+        Self { offset }
     }
 }
 
@@ -197,7 +293,7 @@ impl RigDriver for Arm {
     fn update(&mut self, params: RigUpdateParams) -> Transform {
         Transform {
             rotation: params.parent.rotation,
-            translation: params.parent.translation + params.parent.rotation * Vec3::Z * self.length,
+            translation: params.parent.translation + params.parent.rotation * self.offset,
         }
     }
 
@@ -251,5 +347,47 @@ impl CameraRigBuilder {
 
         rig.update(0.0);
         rig
+    }
+}
+
+trait Interpolate {
+    fn interpolate(self, other: Self, t: f32) -> Self;
+}
+
+impl Interpolate for Vec3 {
+    fn interpolate(self, other: Self, t: f32) -> Self {
+        Vec3::lerp(self, other, t)
+    }
+}
+
+impl Interpolate for Quat {
+    fn interpolate(self, other: Self, t: f32) -> Self {
+        Quat::lerp(self.normalize(), other.normalize(), t).normalize()
+    }
+}
+
+struct ExpSmoothingParams {
+    smoothness: f32,
+    output_offset_scale: f32,
+    dt: f32,
+}
+
+#[derive(Default)]
+struct ExpSmoothed<T: Interpolate + Copy>(Option<T>);
+
+impl<T: Interpolate + Copy> ExpSmoothed<T> {
+    fn exp_smooth_towards(&mut self, other: &T, params: ExpSmoothingParams) -> T {
+        let interp_t = 1.0 - (-8.0 * params.dt / params.smoothness.max(1e-5)).exp();
+
+        let prev = self.0.unwrap_or(*other);
+        let smooth = prev.interpolate(*other, interp_t);
+
+        self.0 = Some(smooth);
+
+        if params.output_offset_scale != 1.0 {
+            Interpolate::interpolate(*other, smooth, params.output_offset_scale)
+        } else {
+            smooth
+        }
     }
 }
