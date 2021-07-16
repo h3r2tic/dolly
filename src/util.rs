@@ -34,6 +34,7 @@ impl<T: Interpolate + Copy> ExpSmoothed<T> {
 
         self.0 = Some(smooth);
 
+        #[allow(clippy::float_cmp)]
         if params.output_offset_scale != 1.0 {
             Interpolate::interpolate(*other, smooth, params.output_offset_scale)
         } else {

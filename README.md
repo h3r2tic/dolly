@@ -2,7 +2,7 @@
 
 Combine simple building blocks to create smooth cameras: first-person, chase, orbit, look-at, you name it!
 
-Camera rigs made with `dolly` are engine-agnostic, and only provide camera positioning. Optical and rendering parameters such as field of view and clipping planes can be built on top, but are not within the scope of this crate.
+Camera rigs made with `dolly` are engine-agnostic, and only provide camera positioning. Optical and rendering parameters such as field of view and clipping planes can be built on top, and are not within the scope of this crate.
 
 While cameras are a complex topic in gamedev, this crate only provides the basics, aiming at small games and tools.
 
