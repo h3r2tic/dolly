@@ -411,3 +411,17 @@ impl<T: Interpolate + Copy> ExpSmoothed<T> {
         }
     }
 }
+
+#[test]
+fn test() {
+    let mut camera = CameraRig::builder()
+        .with(Positional::new(Vec3::ZERO))
+        .with(YawPitch::new())
+        .with(Smooth::new_move_look(1.0, 1.0))
+        .build();
+
+    // ...
+
+    camera.driver_mut::<YawPitch>().rotate_yaw_pitch(10.0, 0.0);
+    camera.update(1.0 / 60.0);
+}
