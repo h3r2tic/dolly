@@ -1,6 +1,6 @@
 # 🎥 dolly
 
-Creates smooth cameras out of simple building blocks: first-person, chase, orbit, look-at, you name it!
+Combine simple building blocks to creates smooth cameras: first-person, chase, orbit, look-at, you name it!
 
 Camera rigs made with `dolly` are engine-agnostic, and only provide camera positioning. Optical and rendering parameters such as field of view and clipping planes can be built on top, but are not within the scope of this crate.
 
