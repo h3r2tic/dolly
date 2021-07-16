@@ -1,10 +1,10 @@
 # 🎥 dolly
 
-Create smooth first-person, chase, orbit and other camera types out of simple building blocks.
+Creates smooth cameras out of simple building blocks: first-person, chase, orbit, look-at, you name it!
 
-Camera rigs made with `dolly` are engine-agnostic, and only provide camera positioning. Optical and rendering parameters such as field of view and clipping planes can be built on top, and are not within the scope of this crate.
+Camera rigs made with `dolly` are engine-agnostic, and only provide camera positioning. Optical and rendering parameters such as field of view and clipping planes can be built on top, but are not within the scope of this crate.
 
-While cameras are a complex topic in AAA productions, this crate only provides basics, aiming at simple games and tools.
+While cameras are a complex topic in gamedev, this crate only provides the basics, aiming at small games and tools.
 
 ## Examples
 
@@ -27,7 +27,7 @@ if keyboard.was_just_pressed(VirtualKeyCode::X) {
     camera_driver.rotate_yaw_pitch(90.0, 0.0);
 }
 
-camera.update(delta_seconds);
+camera.update(time_delta_seconds);
 ```
 
 ---
@@ -53,6 +53,44 @@ camera
     .driver_mut::<Positional>()
     .set_position_rotation(car.position, car.rotation);
 camera.driver_mut::<LookAt>().target = car.position + Vec3::Y;
+camera.update(time_delta_seconds);
+```
 
-camera.update(delta_seconds);
+---
+
+```rust
+let mut camera = CameraRig::builder()
+    .with(Positional::new(Vec3::Y * 3.0))
+    .with(LookAt::new(car.position))
+    .build();
+
+// ...
+
+camera.driver_mut::<LookAt>().target = car.position;
+camera.update(time_delta_seconds);
+```
+
+---
+
+```rust
+let mut camera = CameraRig::builder()
+    .with(Positional::new(Vec3::Y))
+    .with(YawPitch::new())
+    .with(Smooth::new_move_look(1.0, 1.0))
+    .build();
+
+// ...
+
+let move_vec = camera.transform.rotation
+    * Vec3::new(input["move_right"], input["move_up"], -input["move_fwd"])
+        .clamp_length_max(1.0)
+    * 10.0f32.powf(input["boost"]);
+
+camera
+    .driver_mut::<YawPitch>()
+    .rotate_yaw_pitch(-0.3 * mouse.delta.x, -0.3 * mouse.delta.y);
+camera
+    .driver_mut::<Positional>()
+    .translate(move_vec * time_delta_seconds * 10.0);
+camera.update(time_delta_seconds);
 ```

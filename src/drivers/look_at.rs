@@ -1,4 +1,4 @@
-use glam::{Quat, Vec3};
+use glam::{Mat3, Quat, Vec3};
 
 use crate::{
     driver::RigDriver,
@@ -46,15 +46,18 @@ impl RigDriver for LookAt {
             },
         );
 
+        let rotation = (target - params.parent.translation)
+            .try_normalize()
+            .and_then(|forward| {
+                let right = forward.cross(Vec3::Y).try_normalize()?;
+                let up = right.cross(forward);
+                Some(Quat::from_mat3(&Mat3::from_cols(right, up, -forward)))
+            })
+            .unwrap_or_default();
+
         Transform {
             translation: params.parent.translation,
-            rotation: Quat::from_mat4(&glam::Mat4::look_at_rh(
-                params.parent.translation,
-                target,
-                Vec3::Y,
-            ))
-            .conjugate()
-            .normalize(),
+            rotation,
         }
     }
 
