@@ -22,9 +22,7 @@ impl YawPitch {
     }
 
     pub fn rotation(mut self, rotation: Quat) -> Self {
-        let (yaw, pitch, _) = rotation.to_euler(EulerRot::YXZ);
-        self.yaw_degrees = yaw.to_degrees();
-        self.pitch_degrees = pitch.to_degrees();
+        self.set_rotation(rotation);
         self
     }
 
@@ -41,6 +39,12 @@ impl YawPitch {
     pub fn rotate_yaw_pitch(&mut self, yaw_degrees: f32, pitch_degrees: f32) {
         self.pitch_degrees = (self.pitch_degrees + pitch_degrees).clamp(-90.0, 90.0);
         self.yaw_degrees = (self.yaw_degrees + yaw_degrees) % 720_f32;
+    }
+
+    pub fn set_rotation(&mut self, rotation: Quat) {
+        let (yaw, pitch, _) = rotation.to_euler(EulerRot::YXZ);
+        self.yaw_degrees = yaw.to_degrees();
+        self.pitch_degrees = pitch.to_degrees();
     }
 }
 
