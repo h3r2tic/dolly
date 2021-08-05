@@ -1,5 +1,8 @@
 # 🎥 dolly
 
+[![Crates.io](https://img.shields.io/crates/v/dolly.svg)](https://crates.io/crates/dolly)
+[![Docs](https://docs.rs/dolly/badge.svg)](https://docs.rs/dolly)
+
 Combine simple building blocks to create smooth cameras: first-person, chase, orbit, look-at, you name it!
 
 Camera rigs made with `dolly` are engine-agnostic, and only provide camera positioning. Optical and rendering parameters such as field of view and clipping planes can be built on top, and are not within the scope of this crate.
@@ -36,24 +39,23 @@ https://user-images.githubusercontent.com/16522064/125960227-7ee05c04-f47a-4c32-
 
 ```rust
 let mut camera = CameraRig::builder()
-    .with(Positional::new(car.position))
-    .with(Smooth::new_move(1.25).predictive(1.0))
+    .with(Position::new(car.position))
+    .with(Rotation::new(car.rotation))
+    .with(Smooth::new_position(1.25).predictive(true))
     .with(Arm::new(Vec3::new(0.0, 1.5, -3.5)))
-    .with(Smooth::new_move(2.5))
+    .with(Smooth::new_position(2.5))
     .with(
         LookAt::new(car.position + Vec3::Y)
-            .smoothness(1.25)
-            .predictive(1.0),
+            .tracking_smoothness(1.25)
+            .tracking_predictive(true),
     )
     .build();
 
 // ...
 
-camera
-    .driver_mut::<Positional>()
-    .set_position_rotation(car.position, car.rotation);
+camera.driver_mut::<Position>().position = car.position;
+camera.driver_mut::<Rotation>().rotation = car.rotation;
 camera.driver_mut::<LookAt>().target = car.position + Vec3::Y;
-camera.update(time_delta_seconds);
 ```
 
 ---
@@ -62,7 +64,7 @@ https://user-images.githubusercontent.com/16522064/125986386-60cb9d26-06a2-4d3f-
 
 ```rust
 let mut camera = CameraRig::builder()
-    .with(Positional::new(Vec3::Y * 3.0))
+    .with(Position::new(Vec3::Y * 3.0))
     .with(LookAt::new(car.position))
     .build();
 
@@ -78,9 +80,9 @@ https://user-images.githubusercontent.com/16522064/125986405-a06f6572-702a-4c1a-
 
 ```rust
 let mut camera = CameraRig::builder()
-    .with(Positional::new(Vec3::Y))
+    .with(Position::new(Vec3::Y))
     .with(YawPitch::new())
-    .with(Smooth::new_move_look(1.0, 1.0))
+    .with(Smooth::new_position_rotation(1.0, 1.0))
     .build();
 
 // ...
@@ -94,7 +96,7 @@ camera
     .driver_mut::<YawPitch>()
     .rotate_yaw_pitch(-0.3 * mouse.delta.x, -0.3 * mouse.delta.y);
 camera
-    .driver_mut::<Positional>()
+    .driver_mut::<Position>()
     .translate(move_vec * time_delta_seconds * 10.0);
 camera.update(time_delta_seconds);
 ```

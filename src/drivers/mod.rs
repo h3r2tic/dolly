@@ -1,5 +1,8 @@
-pub mod arm;
-pub mod look_at;
-pub mod positional;
-pub mod smooth;
-pub mod yaw_pitch;
+mod arm;
+mod look_at;
+mod position;
+mod rotation;
+mod smooth;
+mod yaw_pitch;
+
+pub use self::{arm::*, look_at::*, position::*, rotation::*, smooth::*, yaw_pitch::*};

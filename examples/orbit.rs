@@ -8,19 +8,17 @@ async fn main() {
     // Create a smoothed orbit camera
     let mut camera = CameraRig::builder()
         .with(YawPitch::new().yaw_degrees(45.0).pitch_degrees(-30.0))
-        .with(Smooth::new_look(1.5))
+        .with(Smooth::new_rotation(1.5))
         .with(Arm::new(dolly::glam::Vec3::Z * 8.0))
         .build();
 
     loop {
         // Handle camera input
-        if let Some(camera_driver) = camera.driver_mut::<YawPitch>() {
-            if is_key_pressed(KeyCode::Z) {
-                camera_driver.rotate_yaw_pitch(-90.0, 0.0);
-            }
-            if is_key_pressed(KeyCode::X) {
-                camera_driver.rotate_yaw_pitch(90.0, 0.0);
-            }
+        if is_key_pressed(KeyCode::Z) {
+            camera.driver_mut::<YawPitch>().rotate_yaw_pitch(-90.0, 0.0);
+        }
+        if is_key_pressed(KeyCode::X) {
+            camera.driver_mut::<YawPitch>().rotate_yaw_pitch(90.0, 0.0);
         }
 
         // Update the camera rig, and get the interpolated transform
@@ -31,9 +29,9 @@ async fn main() {
         // Pass the camera to macroquad, doing some gymnastics to convince
         // the two different `glam` versions to talk to each other.
         set_camera(&Camera3D {
-            position: <[f32; 3]>::from(camera_xform.translation).into(),
+            position: <[f32; 3]>::from(camera_xform.position).into(),
             up: <[f32; 3]>::from(camera_xform.up()).into(),
-            target: <[f32; 3]>::from(camera_xform.translation + camera_xform.forward()).into(),
+            target: <[f32; 3]>::from(camera_xform.position + camera_xform.forward()).into(),
             ..Default::default()
         });
 
@@ -50,13 +48,7 @@ async fn main() {
         draw_sphere(vec3(-8., 0., 0.), 1., None, BLUE);
 
         set_default_camera();
-        draw_text(
-            "Press X and Z to rotate the camera",
-            10.0,
-            20.0,
-            30.0,
-            BLACK,
-        );
+        draw_text("Press X or Z to rotate the camera", 10.0, 20.0, 30.0, BLACK);
 
         next_frame().await
     }

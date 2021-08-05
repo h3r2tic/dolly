@@ -7,14 +7,25 @@ use crate::{
     util::{ExpSmoothed, ExpSmoothingParams},
 };
 
+/// Rotates the camera to point at a world-space position.
+///
+/// The target tracking can be additionally smoothed, and made to look ahead of it.
+#[derive(Debug)]
 pub struct LookAt {
+    /// Exponential smoothing factor
     pub smoothness: f32,
+
+    /// The world-space position to look at
     pub target: Vec3,
+
+    // The scale with which smoothing should be applied to the target position
     output_offset_scale: f32,
+
     smoothed_target: ExpSmoothed<Vec3>,
 }
 
 impl LookAt {
+    ///
     pub fn new(target: Vec3) -> Self {
         Self {
             smoothness: 0.0,
@@ -24,13 +35,19 @@ impl LookAt {
         }
     }
 
-    pub fn smoothness(mut self, smoothness: f32) -> Self {
+    /// Set the exponential smoothing factor for target position tracking.
+    pub fn tracking_smoothness(mut self, smoothness: f32) -> Self {
         self.smoothness = smoothness;
         self
     }
 
-    pub fn predictive(mut self, scale: f32) -> Self {
-        self.output_offset_scale = -scale;
+    /// Reverse target position smoothing, causing the camera to look ahead of it.
+    /// This can then be chained with [`Smooth`], to create
+    /// a camera that smoothly follows an object, but doesn't lag far behind it.
+    ///
+    /// [`Smooth`]: struct.Smooth.html
+    pub fn tracking_predictive(mut self, predictive: bool) -> Self {
+        self.output_offset_scale = if predictive { -1.0 } else { 1.0 };
         self
     }
 }
@@ -42,11 +59,11 @@ impl RigDriver for LookAt {
             ExpSmoothingParams {
                 smoothness: self.smoothness,
                 output_offset_scale: self.output_offset_scale,
-                dt: params.dt,
+                delta_time_seconds: params.delta_time_seconds,
             },
         );
 
-        let rotation = (target - params.parent.translation)
+        let rotation = (target - params.parent.position)
             .try_normalize()
             .and_then(|forward| {
                 let right = forward.cross(Vec3::Y).try_normalize()?;
@@ -56,7 +73,7 @@ impl RigDriver for LookAt {
             .unwrap_or_default();
 
         Transform {
-            translation: params.parent.translation,
+            position: params.parent.position,
             rotation,
         }
     }

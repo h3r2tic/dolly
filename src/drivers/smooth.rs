@@ -7,91 +7,96 @@ use crate::{
     util::{ExpSmoothed, ExpSmoothingParams},
 };
 
+/// Smooths the parent transformation.
+#[derive(Debug)]
 pub struct Smooth {
-    pub move_smoothness: f32,
-    pub look_smoothness: f32,
+    /// Exponential smoothing factor for the position
+    pub position_smoothness: f32,
+
+    /// Exponential smoothing factor for the rotation
+    pub rotation_smoothness: f32,
+
+    // The scale with which smoothing should be applied
     output_offset_scale: f32,
-    smoothed_translation: ExpSmoothed<Vec3>,
+
+    smoothed_position: ExpSmoothed<Vec3>,
     smoothed_rotation: ExpSmoothed<Quat>,
 }
 
 impl Default for Smooth {
     fn default() -> Self {
         Self {
-            move_smoothness: 1.0,
-            look_smoothness: 1.0,
+            position_smoothness: 1.0,
+            rotation_smoothness: 1.0,
             output_offset_scale: 1.0,
-            smoothed_translation: Default::default(),
+            smoothed_position: Default::default(),
             smoothed_rotation: Default::default(),
         }
     }
 }
 
 impl Smooth {
-    pub fn new_move(move_smoothness: f32) -> Self {
+    /// Only smooth position
+    pub fn new_position(position_smoothness: f32) -> Self {
         Self {
-            move_smoothness,
-            look_smoothness: 0.0,
+            position_smoothness,
+            rotation_smoothness: 0.0,
             ..Default::default()
         }
     }
 
-    pub fn new_look(look_smoothness: f32) -> Self {
+    /// Only smooth rotation
+    pub fn new_rotation(rotation_smoothness: f32) -> Self {
         Self {
-            look_smoothness,
-            move_smoothness: 0.0,
+            rotation_smoothness,
+            position_smoothness: 0.0,
             ..Default::default()
         }
     }
 
-    pub fn new_move_look(move_smoothness: f32, look_smoothness: f32) -> Self {
+    /// Smooth both position and rotation
+    pub fn new_position_rotation(position_smoothness: f32, rotation_smoothness: f32) -> Self {
         Self {
-            move_smoothness,
-            look_smoothness,
+            position_smoothness,
+            rotation_smoothness,
             ..Default::default()
         }
     }
 
-    pub fn move_smoothness(mut self, move_smoothness: f32) -> Self {
-        self.move_smoothness = move_smoothness;
-        self
-    }
-
-    pub fn look_smoothness(mut self, look_smoothness: f32) -> Self {
-        self.look_smoothness = look_smoothness;
-        self
-    }
-
-    pub fn predictive(mut self, scale: f32) -> Self {
-        self.output_offset_scale = -scale;
+    /// Reverse the smoothing, causing the camera to look ahead of the parent transform
+    ///
+    /// This can be useful on top of [`Position`], and before another `Smooth`
+    /// in the chain to create a soft yet responsive follower camera.
+    ///
+    /// [`Position`]: struct.Position.html
+    /// [`Smooth`]: struct.Smooth.html
+    pub fn predictive(mut self, predictive: bool) -> Self {
+        self.output_offset_scale = if predictive { -1.0 } else { 1.0 };
         self
     }
 }
 
 impl RigDriver for Smooth {
     fn update(&mut self, params: RigUpdateParams) -> Transform {
-        let translation = self.smoothed_translation.exp_smooth_towards(
-            &params.parent.translation,
+        let position = self.smoothed_position.exp_smooth_towards(
+            &params.parent.position,
             ExpSmoothingParams {
-                smoothness: self.move_smoothness,
+                smoothness: self.position_smoothness,
                 output_offset_scale: self.output_offset_scale,
-                dt: params.dt,
+                delta_time_seconds: params.delta_time_seconds,
             },
         );
 
         let rotation = self.smoothed_rotation.exp_smooth_towards(
             &params.parent.rotation,
             ExpSmoothingParams {
-                smoothness: self.look_smoothness,
+                smoothness: self.rotation_smoothness,
                 output_offset_scale: self.output_offset_scale,
-                dt: params.dt,
+                delta_time_seconds: params.delta_time_seconds,
             },
         );
 
-        Transform {
-            translation,
-            rotation,
-        }
+        Transform { position, rotation }
     }
 
     fn as_any_mut(&mut self) -> &mut dyn std::any::Any {
