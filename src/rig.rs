@@ -14,14 +14,11 @@ pub struct RigUpdateParams<'a> {
 }
 
 impl CameraRig {
-    pub fn driver_mut<T: RigDriver>(&mut self) -> &mut T {
-        for driver in &mut self.drivers {
-            if let Some(driver) = driver.as_mut().as_any_mut().downcast_mut::<T>() {
-                return driver;
-            }
-        }
-
-        panic!();
+    /// Returns the first driver of the matching type
+    pub fn driver_mut<T: RigDriver>(&mut self) -> Option<&mut T> {
+        self.drivers
+            .iter_mut()
+            .find_map(|driver| Some(driver.as_mut().as_any_mut().downcast_mut::<T>()?))
     }
 }
 

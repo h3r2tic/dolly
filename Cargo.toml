@@ -10,4 +10,7 @@ license = "MIT OR Apache-2.0"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-glam = "0.17"
+glam = ">=0.15, <=0.17"
+
+[dev-dependencies]
+macroquad = "0.3"

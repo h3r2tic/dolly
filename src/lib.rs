@@ -20,6 +20,6 @@ fn test() {
 
     // ...
 
-    camera.driver_mut::<YawPitch>().rotate_yaw_pitch(10.0, 0.0);
+    camera.driver_mut::<YawPitch>().expect("yaw driver").rotate_yaw_pitch(10.0, 0.0);
     camera.update(1.0 / 60.0);
 }
