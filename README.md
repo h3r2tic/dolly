@@ -16,7 +16,7 @@ https://user-images.githubusercontent.com/16522064/125960266-fc96b302-6d6b-4976-
 ```rust
 let mut camera = CameraRig::builder()
     .with(YawPitch::new().yaw_degrees(45.0).pitch_degrees(-30.0))
-    .with(Smooth::new_look(1.5))
+    .with(Smooth::new_rotation(1.5))
     .with(Arm::new(Vec3::Z * 4.0))
     .build();
 

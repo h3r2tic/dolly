@@ -1,6 +1,6 @@
 [package]
 name = "dolly"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Tomasz Stachowiak <h3@h3.gd>"]
 edition = "2018"
 license = "MIT OR Apache-2.0"
@@ -9,7 +9,7 @@ repository = "https://github.com/h3r2tic/dolly"
 documentation = "https://docs.rs/dolly"
 keywords = ["gamedev", "camera", "3d"]
 categories = ["game-development"]
-readme = "README.md"
+readme = "crates-io.md"
 
 [dependencies]
 glam = ">=0.15, <=0.17"
