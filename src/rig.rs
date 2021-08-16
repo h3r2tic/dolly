@@ -3,7 +3,7 @@ use crate::{driver::RigDriver, transform::Transform};
 /// A chain of drivers, calculating displacements, and animating in succession.
 pub struct CameraRig {
     ///
-    pub drivers: Vec<Box<dyn RigDriver>>,
+    pub drivers: Vec<Box<dyn RigDriver + Sync + Send>>,
 
     ///
     pub final_transform: Transform,
@@ -69,12 +69,12 @@ impl CameraRig {
 
 ///
 pub struct CameraRigBuilder {
-    drivers: Vec<Box<dyn RigDriver>>,
+    drivers: Vec<Box<dyn RigDriver + Sync + Send>>,
 }
 
 impl CameraRigBuilder {
     ///
-    pub fn with(mut self, driver: impl RigDriver) -> Self {
+    pub fn with(mut self, driver: impl RigDriver + Sync + Send) -> Self {
         self.drivers.push(Box::new(driver));
         self
     }
