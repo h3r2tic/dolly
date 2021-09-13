@@ -1,6 +1,8 @@
 use crate::{driver::RigDriver, transform::Transform};
+use core::fmt::Debug;
 
 /// A chain of drivers, calculating displacements, and animating in succession.
+#[derive(Debug)]
 pub struct CameraRig {
     ///
     pub drivers: Vec<Box<dyn RigDriver + Sync + Send>>,

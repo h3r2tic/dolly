@@ -1,7 +1,8 @@
 use glam::{Quat, Vec3};
+use core::fmt::Debug;
 
 /// A thin wrapper over a `Vec3` and a `Quat`
-#[derive(Clone, Copy)]
+#[derive(Debug, Clone, Copy)]
 pub struct Transform {
     pub position: Vec3,
     pub rotation: Quat,
