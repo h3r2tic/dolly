@@ -39,6 +39,8 @@ pub mod prelude;
 pub mod rig;
 pub mod transform;
 
+pub use dolly_derive::DollyDriver;
+
 mod util;
 
 pub use glam;

@@ -13,6 +13,7 @@ readme = "crates-io.md"
 
 [dependencies]
 glam = ">=0.15, <=0.17"
+dolly_derive = { path = "dolly_derive" }
 
 [dev-dependencies]
 macroquad = "0.3"
