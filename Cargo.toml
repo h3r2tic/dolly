@@ -12,7 +12,7 @@ categories = ["game-development"]
 readme = "crates-io.md"
 
 [dependencies]
-glam = ">=0.15, <=0.17"
+glam = ">=0.15, <=0.18"
 
 [dev-dependencies]
 macroquad = "0.3"
