@@ -26,10 +26,10 @@ impl RigDriver for LockPosition {
             delta_pos.x = 0.
         }
         if self.axes.iter().any(|axis| axis == &Axis::Y) {
-            delta_pos.x = 0.
+            delta_pos.y = 0.
         }
         if self.axes.iter().any(|axis| axis == &Axis::Z) {
-            delta_pos.x = 0.
+            delta_pos.z = 0.
         }
         Transform {
             position: delta_pos,
