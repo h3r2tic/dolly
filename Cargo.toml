@@ -1,6 +1,6 @@
 [package]
 name = "dolly"
-version = "0.1.2"
+version = "0.1.3"
 authors = ["Tomasz Stachowiak <h3@h3.gd>"]
 edition = "2018"
 license = "MIT OR Apache-2.0"
@@ -12,7 +12,7 @@ categories = ["game-development"]
 readme = "crates-io.md"
 
 [dependencies]
-glam = ">=0.15, <=0.17"
+glam = ">=0.15, <=0.18"
 dolly_derive = { path = "dolly_derive" }
 
 [dev-dependencies]
