@@ -4,7 +4,7 @@ use crate::{driver::RigDriver, rig::RigUpdateParams, transform::Transform};
 pub enum Axis {
     X,
     Y,
-    Z
+    Z,
 }
 
 /// Locks/constrains the position of the camera to one or more axes
