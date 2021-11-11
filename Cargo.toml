@@ -12,8 +12,7 @@ categories = ["game-development"]
 readme = "crates-io.md"
 
 [dependencies]
-glam = ">=0.15, <=0.18"
-dolly_derive = { path = "dolly_derive" }
+glam = ">=0.15, <=0.19"
 
 [dev-dependencies]
 macroquad = "0.3"

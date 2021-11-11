@@ -1,43 +1,40 @@
 use crate::{driver::RigDriver, rig::RigUpdateParams, transform::Transform};
 
-#[derive(Debug, PartialEq)]
-pub enum Axis {
-    X,
-    Y,
-    Z,
-}
-
 /// Locks/constrains the position of the camera to one or more axes
 #[derive(Debug)]
 pub struct LockPosition {
-    pub axes: &'static [Axis],
+    x: Option<f32>,
+    y: Option<f32>,
+    z: Option<f32>,
 }
 
 impl LockPosition {
-    pub fn new(axes: &'static [Axis]) -> Self {
-        Self { axes }
+    pub fn new() -> Self {
+        Self { x:None, y:None, z:None }
+    }
+    pub fn from(x: Option<f32>,y :Option<f32>, z:Option<f32>) -> Self {
+        Self { x, y, z }
+    }
+    pub fn x(&self, x: f32) -> Self{
+        Self { x: Some(x), y: self.y, z: self.z}
+    }
+    pub fn y(&self, y: f32) -> Self{
+        Self { x: self.x, y: Some(y), z: self.z}
+    }
+    pub fn z(&self, z: f32) -> Self{
+        Self { x: self.x, y: self.y, z: Some(z)}
     }
 }
 
 impl RigDriver for LockPosition {
     fn update(&mut self, params: RigUpdateParams) -> Transform {
         let mut delta_pos = params.parent.position;
-        if self.axes.iter().any(|axis| axis == &Axis::X) {
-            delta_pos.x = 0.
-        }
-        if self.axes.iter().any(|axis| axis == &Axis::Y) {
-            delta_pos.y = 0.
-        }
-        if self.axes.iter().any(|axis| axis == &Axis::Z) {
-            delta_pos.z = 0.
-        }
+        delta_pos.x = self.x.unwrap_or(delta_pos.x);
+        delta_pos.y = self.y.unwrap_or(delta_pos.y);
+        delta_pos.z = self.z.unwrap_or(delta_pos.z);
         Transform {
             position: delta_pos,
             rotation: params.parent.rotation,
         }
-    }
-
-    fn as_any_mut(&mut self) -> &mut dyn std::any::Any {
-        self
     }
 }

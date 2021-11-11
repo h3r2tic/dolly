@@ -2,39 +2,51 @@ use glam::Quat;
 
 use crate::{driver::RigDriver, rig::RigUpdateParams, transform::Transform};
 
-use super::Axis;
-
 /// Locks/constrains the rotation of the camera to one or more axes
 #[derive(Debug)]
 pub struct LockRotation {
-    pub axes: &'static [Axis],
+    x: bool,
+    y: bool,
+    z: bool,
 }
 
 impl LockRotation {
-    pub fn new(axes: &'static [Axis]) -> Self {
-        Self { axes }
+    pub fn new() -> Self {
+        Self { x:false, y:false, z:false }
+    }
+    pub fn from(x: bool,y :bool, z:bool) -> Self {
+        Self { x, y, z }
+    }
+    pub fn x(&self) -> Self{
+        Self { x: true, y: self.y, z: self.z}
+    }
+    pub fn y(&self) -> Self{
+        Self { x: self.x, y: true, z: self.z}
+    }
+    pub fn z(&self) -> Self{
+        Self { x: self.x, y: self.y, z: true}
     }
 }
 
 impl RigDriver for LockRotation {
     fn update(&mut self, params: RigUpdateParams) -> Transform {
-        let (mut euler, a) = params.parent.rotation.to_axis_angle();
-        if self.axes.iter().any(|axis| axis == &Axis::X) {
-            euler.x = 0.;
+        let rot = params.parent.rotation;
+        let mut delta = Quat::IDENTITY;
+        if self.x {
+            //delta *= Quat::from_xyzw(rot.x, 0., rot.z, rot.w).normalize();
+            delta *= rot;
         }
-        if self.axes.iter().any(|axis| axis == &Axis::Y) {
-            euler.y = 0.;
+        if self.y {
+            delta *= Quat::from_xyzw(0., rot.y, 0., rot.w).normalize();
         }
-        if self.axes.iter().any(|axis| axis == &Axis::Z) {
-            euler.z = 0.;
+        if self.z {
+            delta *= rot;
+            //delta *= Quat::from_xyzw(0., 0., rot.z, rot.w).normalize();
         }
+        
         Transform {
             position: params.parent.position,
-            rotation: Quat::from_axis_angle(euler, a),
+            rotation: delta,
         }
-    }
-
-    fn as_any_mut(&mut self) -> &mut dyn std::any::Any {
-        self
     }
 }

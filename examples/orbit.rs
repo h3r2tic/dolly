@@ -3,7 +3,7 @@
 use dolly::prelude::*;
 use macroquad::prelude::*;
 
-#[macroquad::main("dolly example")]
+#[macroquad::main("dolly orbit example")]
 async fn main() {
     // Create a smoothed orbit camera
     let mut camera = CameraRig::builder()

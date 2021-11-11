@@ -1,11 +1,14 @@
-use crate::{driver::RigDriver, transform::Transform};
+use crate::{
+    driver::{RigDriver, RigDriverTraits},
+    transform::Transform,
+};
 use core::fmt::Debug;
 
 /// A chain of drivers, calculating displacements, and animating in succession.
 #[derive(Debug)]
 pub struct CameraRig {
     ///
-    pub drivers: Vec<Box<dyn RigDriver + Sync + Send>>,
+    pub drivers: Vec<Box<dyn RigDriverTraits>>,
 
     ///
     pub final_transform: Transform,
@@ -25,7 +28,7 @@ pub struct RigUpdateParams<'a> {
 
 impl CameraRig {
     /// Returns the first driver of the matching type. Panics if no such driver is present.
-    pub fn driver_mut<T: RigDriver>(&mut self) -> &mut T {
+    pub fn driver_mut<T: RigDriver + 'static>(&mut self) -> &mut T {
         self.try_driver_mut::<T>().unwrap_or_else(|| {
             panic!(
                 "No {} driver found in the CameraRig",
@@ -35,7 +38,7 @@ impl CameraRig {
     }
 
     /// Returns the Some with the first driver of the matching type, or `None` if no such driver is present.
-    pub fn try_driver_mut<T: RigDriver>(&mut self) -> Option<&mut T> {
+    pub fn try_driver_mut<T: RigDriver + 'static>(&mut self) -> Option<&mut T> {
         self.drivers
             .iter_mut()
             .find_map(|driver| driver.as_mut().as_any_mut().downcast_mut::<T>())
@@ -71,12 +74,12 @@ impl CameraRig {
 
 ///
 pub struct CameraRigBuilder {
-    drivers: Vec<Box<dyn RigDriver + Sync + Send>>,
+    drivers: Vec<Box<dyn RigDriverTraits>>,
 }
 
 impl CameraRigBuilder {
     ///
-    pub fn with(mut self, driver: impl RigDriver + Sync + Send) -> Self {
+    pub fn with(mut self, driver: impl RigDriverTraits) -> Self {
         self.drivers.push(Box::new(driver));
         self
     }
