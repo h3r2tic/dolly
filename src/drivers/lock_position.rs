@@ -10,19 +10,41 @@ pub struct LockPosition {
 
 impl LockPosition {
     pub fn new() -> Self {
-        Self { x:None, y:None, z:None }
+        Self {
+            x: None,
+            y: None,
+            z: None,
+        }
     }
-    pub fn from(x: Option<f32>,y :Option<f32>, z:Option<f32>) -> Self {
+    pub fn from(x: Option<f32>, y: Option<f32>, z: Option<f32>) -> Self {
         Self { x, y, z }
     }
-    pub fn x(&self, x: f32) -> Self{
-        Self { x: Some(x), y: self.y, z: self.z}
+    pub fn x(&self, x: f32) -> Self {
+        Self {
+            x: Some(x),
+            y: self.y,
+            z: self.z,
+        }
     }
-    pub fn y(&self, y: f32) -> Self{
-        Self { x: self.x, y: Some(y), z: self.z}
+    pub fn y(&self, y: f32) -> Self {
+        Self {
+            x: self.x,
+            y: Some(y),
+            z: self.z,
+        }
     }
-    pub fn z(&self, z: f32) -> Self{
-        Self { x: self.x, y: self.y, z: Some(z)}
+    pub fn z(&self, z: f32) -> Self {
+        Self {
+            x: self.x,
+            y: self.y,
+            z: Some(z),
+        }
+    }
+}
+
+impl Default for LockPosition {
+    fn default() -> Self {
+        Self::new()
     }
 }
 

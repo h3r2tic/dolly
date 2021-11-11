@@ -12,19 +12,41 @@ pub struct LockRotation {
 
 impl LockRotation {
     pub fn new() -> Self {
-        Self { x:false, y:false, z:false }
+        Self {
+            x: false,
+            y: false,
+            z: false,
+        }
     }
-    pub fn from(x: bool,y :bool, z:bool) -> Self {
+    pub fn from(x: bool, y: bool, z: bool) -> Self {
         Self { x, y, z }
     }
-    pub fn x(&self) -> Self{
-        Self { x: true, y: self.y, z: self.z}
+    pub fn x(&self) -> Self {
+        Self {
+            x: true,
+            y: self.y,
+            z: self.z,
+        }
     }
-    pub fn y(&self) -> Self{
-        Self { x: self.x, y: true, z: self.z}
+    pub fn y(&self) -> Self {
+        Self {
+            x: self.x,
+            y: true,
+            z: self.z,
+        }
     }
-    pub fn z(&self) -> Self{
-        Self { x: self.x, y: self.y, z: true}
+    pub fn z(&self) -> Self {
+        Self {
+            x: self.x,
+            y: self.y,
+            z: true,
+        }
+    }
+}
+
+impl Default for LockRotation {
+    fn default() -> Self {
+        Self::new()
     }
 }
 
@@ -43,7 +65,7 @@ impl RigDriver for LockRotation {
             delta *= rot;
             //delta *= Quat::from_xyzw(0., 0., rot.z, rot.w).normalize();
         }
-        
+
         Transform {
             position: params.parent.position,
             rotation: delta,
