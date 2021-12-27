@@ -27,7 +27,6 @@ impl Follow {
                         .tracking_smoothness(1.25)
                         .tracking_predictive(true),
                 )
-                .with(LockRotation::new().y())
                 .build(),
         )
     }
@@ -44,43 +43,68 @@ impl Follow {
     }
 }
 
-const FREQ: f32 = 2.;
-const AMP: f32 = 1.;
-
 #[macroquad::main("dolly follow example")]
 async fn main() {
+    info!("{}", "WASD to move");
+    info!("{}", "Spacebar and LShift to go up and down");
+    info!("{}", "C to switch between player and camera");
+
+    // The transform (the position and rotation) of the camera
+    let mut camera_transform = dolly::transform::Transform::from_position_rotation(
+        dolly::glam::Vec3::new(0.0, 0., 4.),
+        Quat::IDENTITY,
+    );
+
     // Create a smoothed orbit camera
     let mut camera = CameraRig::builder()
         .with(Follow::from_transform(
-            dolly::transform::Transform::from_position_rotation(
-                dolly::glam::Vec3::new(0.0, 0., -4.),
-                Quat::IDENTITY,
-            ),
+            camera_transform,
         ))
         .build();
 
-    let mut total_time: f32 = 0.;
-    let transform = dolly::transform::Transform::from_position_rotation(
-        dolly::glam::Vec3::new(0.0, 0., -4.),
-        Quat::IDENTITY,
-    );
-    let mut stick = CameraRig::builder()
-        .with(Rotation::default())
-        .with(Arm::new(dolly::glam::Vec3::Z * 8.0))
-        .build();
+    let mut yellow_pos = vec3(2., 2., 2.);
+    let speed = 0.05;
+    let mut is_player = true;
 
     loop {
-        total_time += get_frame_time();
+        if is_key_pressed(KeyCode::C) {
+            is_player = !is_player;
+            println!("{}", if is_player {"Player"} else {"Camera"});
+        }
 
-        stick.driver_mut::<Rotation>().rotation = Quat::from_rotation_y(total_time);
-        let stick_t = stick.update(get_frame_time());
-        let yellow_pos = vec3(2., (FREQ * total_time).sin() + AMP, 2.)
-            + glam::Vec3::new(stick_t.position.x, stick_t.position.y, stick_t.position.z);
+        let mut delta_pos = vec3(0.,0.,0.);
 
-        //Update the n
+        if is_key_down(KeyCode::D) {
+            delta_pos.x += speed;
+        }
+        if is_key_down(KeyCode::A) {
+            delta_pos.x -= speed;
+        }
+        if is_key_down(KeyCode::S) {
+            delta_pos.z += speed;
+        }
+        if is_key_down(KeyCode::W) {
+            delta_pos.z -= speed;
+        }
+        if is_key_down(KeyCode::LeftShift) {
+            delta_pos.y -= speed;
+        }
+        if is_key_down(KeyCode::Space) {
+            delta_pos.y += speed;
+        }
+
+        if is_player {
+            yellow_pos += delta_pos;
+        } else {
+            camera_transform.position.x += delta_pos.x;
+            camera_transform.position.y += delta_pos.y;
+            camera_transform.position.z += delta_pos.z;
+        }
+
+        //Update the camera follow driver
         camera.driver_mut::<Follow>().follow(
-            transform.position,
-            transform.rotation,
+            camera_transform.position,
+            camera_transform.rotation,
             dolly::glam::Vec3::new(yellow_pos.x, yellow_pos.y, yellow_pos.z),
         );
 
