@@ -57,9 +57,7 @@ async fn main() {
 
     // Create a smoothed orbit camera
     let mut camera = CameraRig::builder()
-        .with(Follow::from_transform(
-            camera_transform,
-        ))
+        .with(Follow::from_transform(camera_transform))
         .build();
 
     let mut yellow_pos = vec3(2., 2., 2.);
@@ -69,10 +67,10 @@ async fn main() {
     loop {
         if is_key_pressed(KeyCode::C) {
             is_player = !is_player;
-            println!("{}", if is_player {"Player"} else {"Camera"});
+            println!("{}", if is_player { "Player" } else { "Camera" });
         }
 
-        let mut delta_pos = vec3(0.,0.,0.);
+        let mut delta_pos = vec3(0., 0., 0.);
 
         if is_key_down(KeyCode::D) {
             delta_pos.x += speed;
