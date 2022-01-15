@@ -23,8 +23,4 @@ impl RigDriver for Arm {
             position: params.parent.position + params.parent.rotation * self.offset,
         }
     }
-
-    fn as_any_mut(&mut self) -> &mut dyn std::any::Any {
-        self
-    }
 }

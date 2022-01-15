@@ -98,8 +98,4 @@ impl RigDriver for Smooth {
 
         Transform { position, rotation }
     }
-
-    fn as_any_mut(&mut self) -> &mut dyn std::any::Any {
-        self
-    }
 }
