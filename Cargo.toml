@@ -1,7 +1,6 @@
 [package]
 name = "dolly"
-version = "0.1.4"
-authors = ["Tomasz Stachowiak <h3@h3.gd>"]
+version = "0.2.0"
 edition = "2021"
 license = "MIT OR Apache-2.0"
 description = "Composable camera rigs"
