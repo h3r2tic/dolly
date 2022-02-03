@@ -12,6 +12,9 @@ pub struct CameraRig {
 
     ///
     pub final_transform: Transform,
+
+    ///
+    right_handed: bool,
 }
 
 // Prevents user calls to `RigDriver::update`. All updates must come from `CameraRig::update`.
@@ -23,6 +26,9 @@ pub struct RigUpdateParams<'a> {
     pub parent: &'a Transform,
     ///
     pub delta_time_seconds: f32,
+    ///
+    pub right_handed: bool,
+
     _token: RigUpdateToken,
 }
 
@@ -54,6 +60,7 @@ impl CameraRig {
             let transform = driver.update(RigUpdateParams {
                 parent: &parent_transform,
                 delta_time_seconds,
+                right_handed: self.right_handed,
                 _token: RigUpdateToken,
             });
 
@@ -62,6 +69,11 @@ impl CameraRig {
 
         self.final_transform = parent_transform;
         self.final_transform
+    }
+
+    /// Return handedness of the camera rig
+    pub fn is_right_handed(&self) -> bool {
+        self.right_handed
     }
 
     /// Use this to make a new rig
@@ -85,15 +97,25 @@ impl CameraRigBuilder {
     }
 
     ///
-    pub fn build(self) -> CameraRig {
+    fn build_internal(self, right_handed: bool) -> CameraRig {
         let mut rig = CameraRig {
             drivers: self.drivers,
             // Initialize with a dummy identity transform. Will be overridden in a moment.
             final_transform: Transform::IDENTITY,
+            right_handed,
         };
 
         // Update once to find the final transform
         rig.update(0.0);
         rig
+    }
+
+    ///
+    pub fn build(self) -> CameraRig {
+        self.build_internal(true)
+    }
+
+    pub fn build_lh(self) -> CameraRig {
+        self.build_internal(false)
     }
 }

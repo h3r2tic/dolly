@@ -94,7 +94,7 @@ async fn main() {
         set_camera(&Camera3D {
             position: camera_xform.position.d2m(),
             up: camera_xform.up().d2m(),
-            target: (camera_xform.position + camera_xform.forward()).d2m(),
+            target: (camera_xform.position + camera_xform.forward(camera.is_right_handed())).d2m(),
             ..Default::default()
         });
 

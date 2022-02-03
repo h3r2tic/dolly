@@ -30,7 +30,7 @@ impl Default for YawPitch {
 }
 
 impl YawPitch {
-    /// Creates camera looking forward along -Z
+    /// Creates camera looking forward along Z axis (negative or positive depends on system handedness)
     pub fn new() -> Self {
         Self {
             yaw_degrees: 0.0,

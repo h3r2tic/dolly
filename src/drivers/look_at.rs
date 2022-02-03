@@ -66,9 +66,17 @@ impl RigDriver for LookAt {
         let rotation = (target - params.parent.position)
             .try_normalize()
             .and_then(|forward| {
-                let right = forward.cross(Vec3::Y).try_normalize()?;
-                let up = right.cross(forward);
-                Some(Quat::from_mat3(&Mat3::from_cols(right, up, -forward)))
+                // Can achieve the same by flipping signs, but I think this makes it clearer.
+                let (right, up) = if params.right_handed {
+                    let right = forward.cross(Vec3::Y).try_normalize()?;
+                    let up = right.cross(forward);
+                    (right, up)
+                } else {
+                    let right = Vec3::Y.cross(forward).try_normalize()?;
+                    let up = forward.cross(right);
+                    (right, up)
+                };
+                Some(Quat::from_mat3(&Mat3::from_cols(right, up, forward)))
             })
             .unwrap_or_default();
 

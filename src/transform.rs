@@ -30,8 +30,9 @@ impl Transform {
     }
 
     /// -Z
-    pub fn forward(&self) -> Vec3 {
-        self.rotation * -Vec3::Z
+    pub fn forward(&self, right_handed: bool) -> Vec3 {
+        let sign = if right_handed { -1.0 } else { 1.0 };
+        self.rotation * Vec3::Z * sign
     }
 
     ///

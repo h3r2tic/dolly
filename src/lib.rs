@@ -7,7 +7,6 @@
 //! rotation via yaw and pitch angles. Each frame, driver parameters can be modified,
 //! and will affect the subsequent call to [`CameraRig::update`], which provides the final camera transformation.
 //!
-//! Please note that `dolly` currently assumes the right-handed OpenGL-style coordinate system.
 //!
 //! # Example
 //!
