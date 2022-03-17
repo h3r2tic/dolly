@@ -1,6 +1,8 @@
+use std::marker::PhantomData;
+
 use glam::{EulerRot, Quat};
 
-use crate::{driver::RigDriver, rig::RigUpdateParams, transform::Transform};
+use crate::{driver::RigDriver, prelude::Handedness, rig::RigUpdateParams, transform::Transform};
 
 /// Calculate camera rotation based on yaw and pitch angles.
 ///
@@ -72,8 +74,8 @@ impl YawPitch {
     }
 }
 
-impl RigDriver for YawPitch {
-    fn update(&mut self, params: RigUpdateParams) -> Transform {
+impl<H: Handedness + 'static> RigDriver<H> for YawPitch {
+    fn update(&mut self, params: RigUpdateParams<H>) -> Transform<H> {
         Transform {
             position: params.parent.position,
             rotation: Quat::from_euler(
@@ -82,6 +84,7 @@ impl RigDriver for YawPitch {
                 self.pitch_degrees.to_radians(),
                 0.0,
             ),
+            ty: PhantomData,
         }
     }
 }

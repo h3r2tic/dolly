@@ -1,6 +1,10 @@
+use std::marker::PhantomData;
+
 use glam::Vec3;
 
-use crate::{driver::RigDriver, rig::RigUpdateParams, transform::Transform};
+use crate::{
+    driver::RigDriver, handedness::Handedness, rig::RigUpdateParams, transform::Transform,
+};
 
 /// Directly sets the position of the camera
 #[derive(Default, Debug)]
@@ -20,11 +24,12 @@ impl Position {
     }
 }
 
-impl RigDriver for Position {
-    fn update(&mut self, params: RigUpdateParams) -> Transform {
+impl<H: Handedness + 'static> RigDriver<H> for Position {
+    fn update(&mut self, params: RigUpdateParams<H>) -> Transform<H> {
         Transform {
             position: self.position,
             rotation: params.parent.rotation,
+            ty: PhantomData,
         }
     }
 }

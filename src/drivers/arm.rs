@@ -1,6 +1,10 @@
+use std::marker::PhantomData;
+
 use glam::Vec3;
 
-use crate::{driver::RigDriver, rig::RigUpdateParams, transform::Transform};
+use crate::{
+    driver::RigDriver, handedness::Handedness, rig::RigUpdateParams, transform::Transform,
+};
 
 /// Offsets the camera along a vector, in the coordinate space of the parent.
 #[derive(Debug)]
@@ -16,11 +20,12 @@ impl Arm {
     }
 }
 
-impl RigDriver for Arm {
-    fn update(&mut self, params: RigUpdateParams) -> Transform {
+impl<H: Handedness + 'static> RigDriver<H> for Arm {
+    fn update(&mut self, params: RigUpdateParams<H>) -> Transform<H> {
         Transform {
             rotation: params.parent.rotation,
             position: params.parent.position + params.parent.rotation * self.offset,
+            ty: PhantomData,
         }
     }
 }

@@ -6,7 +6,7 @@ use macroquad::prelude::*;
 #[macroquad::main("dolly orbit example")]
 async fn main() {
     // Create a smoothed orbit camera
-    let mut camera = CameraRig::builder()
+    let mut camera = CameraRig::<RightHanded>::builder()
         .with(YawPitch::new().yaw_degrees(45.0).pitch_degrees(-30.0))
         .with(Smooth::new_rotation(1.5))
         .with(Arm::new(dolly::glam::Vec3::Z * 8.0))
@@ -31,10 +31,7 @@ async fn main() {
         set_camera(&Camera3D {
             position: <[f32; 3]>::from(camera_xform.position).into(),
             up: <[f32; 3]>::from(camera_xform.up()).into(),
-            target: <[f32; 3]>::from(
-                camera_xform.position + camera_xform.forward(camera.is_right_handed()),
-            )
-            .into(),
+            target: <[f32; 3]>::from(camera_xform.position + camera_xform.forward()).into(),
             ..Default::default()
         });
 

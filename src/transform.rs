@@ -1,17 +1,25 @@
 use core::fmt::Debug;
 use glam::{Quat, Vec3};
+use std::marker::PhantomData;
+
+use crate::handedness::Handedness;
 
 /// A thin wrapper over a `Vec3` and a `Quat`
 #[derive(Clone, Copy, Debug)]
-pub struct Transform {
+pub struct Transform<H: Handedness + 'static> {
     pub position: Vec3,
     pub rotation: Quat,
+    pub ty: PhantomData<H>,
 }
 
-impl Transform {
+impl<H: Handedness + 'static> Transform<H> {
     ///
     pub fn from_position_rotation(position: Vec3, rotation: Quat) -> Self {
-        Self { position, rotation }
+        Self {
+            position,
+            rotation,
+            ty: PhantomData,
+        }
     }
 
     ///
@@ -30,14 +38,14 @@ impl Transform {
     }
 
     /// -Z
-    pub fn forward(&self, right_handed: bool) -> Vec3 {
-        let sign = if right_handed { -1.0 } else { 1.0 };
-        self.rotation * Vec3::Z * sign
+    pub fn forward(&self) -> Vec3 {
+        self.rotation * Vec3::Z * H::z_sign()
     }
 
     ///
-    pub const IDENTITY: Transform = Transform {
+    pub const IDENTITY: Transform<H> = Transform {
         position: Vec3::ZERO,
         rotation: Quat::IDENTITY,
+        ty: PhantomData,
     };
 }
