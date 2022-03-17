@@ -108,28 +108,3 @@ impl<H: Handedness + 'static> CameraRigBuilder<H> {
         rig
     }
 }
-
-//
-
-// pub trait BuilderWithHandedness<H: Handedness + 'static> {
-//     fn build(self) -> CameraRig<H>;
-// }
-
-// impl BuilderWithHandedness<RightHanded> for CameraRigBuilder<RightHanded> {
-//     fn build(self) -> CameraRig<RightHanded> {
-//         self.build_internal()
-//     }
-// }
-
-// impl BuilderWithHandedness<LeftHanded> for CameraRigBuilder<LeftHanded> {
-//     fn build(self) -> CameraRig<LeftHanded> {
-//         self.build_internal()
-//     }
-// }
-
-// EHRM.............
-// fn test() {
-//     type CameraRig2 = CameraRig<LeftHanded>;
-
-//     let cam = CameraRig2::builder().build();
-// }
