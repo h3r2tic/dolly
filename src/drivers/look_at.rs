@@ -79,7 +79,7 @@ impl<H: Handedness + 'static> RigDriver<H> for LookAt {
                     let up = forward.cross(right);
                     (right, up)
                 };
-                Some(Quat::from_mat3(&Mat3::from_cols(right, up, forward)))
+                Some(Quat::from_mat3(&Mat3::from_cols(right, up, -forward)))
             })
             .unwrap_or_default();
 
