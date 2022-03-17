@@ -31,9 +31,9 @@
 //! [`YawPitch`]: drivers/yaw_pitch/struct.YawPitch.html
 //! [`CameraRig::update`]: rig/struct.CameraRig.html#method.update
 
-pub mod handedness;
 pub mod driver;
 pub mod drivers;
+pub mod handedness;
 pub mod prelude;
 pub mod rig;
 pub mod transform;

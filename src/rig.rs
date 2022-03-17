@@ -1,7 +1,6 @@
 use crate::{
     driver::{RigDriver, RigDriverTraits},
-    handedness::Handedness,
-    prelude::RightHanded,
+    handedness::{Handedness, RightHanded},
     transform::Transform,
 };
 use core::fmt::Debug;

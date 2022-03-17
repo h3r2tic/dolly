@@ -4,7 +4,7 @@ use glam::{Quat, Vec3};
 
 use crate::{
     driver::RigDriver,
-    prelude::Handedness,
+    handedness::Handedness,
     rig::RigUpdateParams,
     transform::Transform,
     util::{ExpSmoothed, ExpSmoothingParams},

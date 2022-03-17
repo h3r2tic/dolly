@@ -2,7 +2,9 @@ use std::marker::PhantomData;
 
 use glam::{EulerRot, Quat};
 
-use crate::{driver::RigDriver, prelude::Handedness, rig::RigUpdateParams, transform::Transform};
+use crate::{
+    driver::RigDriver, handedness::Handedness, rig::RigUpdateParams, transform::Transform,
+};
 
 /// Calculate camera rotation based on yaw and pitch angles.
 ///
