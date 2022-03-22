@@ -52,7 +52,7 @@ impl Default for LockPosition {
     }
 }
 
-impl<H: Handedness + 'static> RigDriver<H> for LockPosition {
+impl<H: Handedness> RigDriver<H> for LockPosition {
     fn update(&mut self, params: RigUpdateParams<H>) -> Transform<H> {
         let mut delta_pos = params.parent.position;
         delta_pos.x = self.x.unwrap_or(delta_pos.x);

@@ -79,7 +79,7 @@ impl Smooth {
     }
 }
 
-impl<H: Handedness + 'static> RigDriver<H> for Smooth {
+impl<H: Handedness> RigDriver<H> for Smooth {
     fn update(&mut self, params: RigUpdateParams<H>) -> Transform<H> {
         let position = self.smoothed_position.exp_smooth_towards(
             &params.parent.position,

@@ -55,7 +55,7 @@ impl LookAt {
     }
 }
 
-impl<H: Handedness + 'static> RigDriver<H> for LookAt {
+impl<H: Handedness> RigDriver<H> for LookAt {
     fn update(&mut self, params: RigUpdateParams<H>) -> Transform<H> {
         let target = self.smoothed_target.exp_smooth_towards(
             &self.target,

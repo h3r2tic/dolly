@@ -18,7 +18,7 @@ impl Rotation {
     }
 }
 
-impl<H: Handedness + 'static> RigDriver<H> for Rotation {
+impl<H: Handedness> RigDriver<H> for Rotation {
     fn update(&mut self, params: RigUpdateParams<H>) -> Transform<H> {
         Transform {
             position: params.parent.position,

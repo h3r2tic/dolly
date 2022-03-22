@@ -76,7 +76,7 @@ impl YawPitch {
     }
 }
 
-impl<H: Handedness + 'static> RigDriver<H> for YawPitch {
+impl<H: Handedness> RigDriver<H> for YawPitch {
     fn update(&mut self, params: RigUpdateParams<H>) -> Transform<H> {
         Transform {
             position: params.parent.position,

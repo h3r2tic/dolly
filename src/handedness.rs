@@ -1,6 +1,6 @@
 use std::fmt::Debug;
 
-pub trait Handedness: Clone + Copy + Debug {
+pub trait Handedness: Clone + Copy + Debug + 'static {
     fn z_sign() -> f32;
     fn right_handed() -> bool;
 }

@@ -8,7 +8,7 @@ use std::marker::PhantomData;
 
 /// A chain of drivers, calculating displacements, and animating in succession.
 #[derive(Debug)]
-pub struct CameraRig<H: Handedness + 'static = RightHanded> {
+pub struct CameraRig<H: Handedness = RightHanded> {
     ///
     pub drivers: Vec<Box<dyn RigDriverTraits<H>>>,
 
@@ -22,7 +22,7 @@ pub struct CameraRig<H: Handedness + 'static = RightHanded> {
 struct RigUpdateToken;
 
 ///
-pub struct RigUpdateParams<'a, H: Handedness + 'static> {
+pub struct RigUpdateParams<'a, H: Handedness> {
     ///
     pub parent: &'a Transform<H>,
     ///
@@ -33,9 +33,9 @@ pub struct RigUpdateParams<'a, H: Handedness + 'static> {
     _token: RigUpdateToken,
 }
 
-impl<H: Handedness + 'static> CameraRig<H> {
+impl<H: Handedness> CameraRig<H> {
     /// Returns the first driver of the matching type. Panics if no such driver is present.
-    pub fn driver_mut<T: RigDriver<H> + 'static>(&mut self) -> &mut T {
+    pub fn driver_mut<T: RigDriver<H>>(&mut self) -> &mut T {
         self.try_driver_mut::<T>().unwrap_or_else(|| {
             panic!(
                 "No {} driver found in the CameraRig",
@@ -45,7 +45,7 @@ impl<H: Handedness + 'static> CameraRig<H> {
     }
 
     /// Returns the Some with the first driver of the matching type, or `None` if no such driver is present.
-    pub fn try_driver_mut<T: RigDriver<H> + 'static>(&mut self) -> Option<&mut T> {
+    pub fn try_driver_mut<T: RigDriver<H>>(&mut self) -> Option<&mut T> {
         self.drivers
             .iter_mut()
             .find_map(|driver| driver.as_mut().as_any_mut().downcast_mut::<T>())
@@ -82,12 +82,12 @@ impl<H: Handedness + 'static> CameraRig<H> {
 }
 
 ///
-pub struct CameraRigBuilder<H: Handedness + 'static> {
+pub struct CameraRigBuilder<H: Handedness> {
     drivers: Vec<Box<dyn RigDriverTraits<H>>>,
     ty: PhantomData<H>,
 }
 
-impl<H: Handedness + 'static> CameraRigBuilder<H> {
+impl<H: Handedness> CameraRigBuilder<H> {
     ///
     pub fn with(mut self, driver: impl RigDriverTraits<H>) -> Self {
         self.drivers.push(Box::new(driver));

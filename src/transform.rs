@@ -6,13 +6,13 @@ use crate::handedness::Handedness;
 
 /// A thin wrapper over a `Vec3` and a `Quat`
 #[derive(Clone, Copy, Debug)]
-pub struct Transform<H: Handedness + 'static> {
+pub struct Transform<H: Handedness> {
     pub position: Vec3,
     pub rotation: Quat,
     pub ty: PhantomData<H>,
 }
 
-impl<H: Handedness + 'static> Transform<H> {
+impl<H: Handedness> Transform<H> {
     ///
     pub fn from_position_rotation(position: Vec3, rotation: Quat) -> Self {
         Self {
