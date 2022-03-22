@@ -9,7 +9,8 @@ pub trait Handedness: Clone + Copy + Debug + 'static {
         Vec3::Z * Self::FORWARD_Z_SIGN
     }
 
-    fn right_handed() -> bool;
+    fn right_from_up_and_forward(up: Vec3, forward: Vec3) -> Vec3;
+    fn up_from_right_and_forward(right: Vec3, forward: Vec3) -> Vec3;
 }
 
 #[derive(Clone, Copy, Debug)]
@@ -18,8 +19,12 @@ pub struct LeftHanded;
 impl Handedness for LeftHanded {
     const FORWARD_Z_SIGN: f32 = 1.0;
 
-    fn right_handed() -> bool {
-        false
+    fn right_from_up_and_forward(up: Vec3, forward: Vec3) -> Vec3 {
+        up.cross(forward)
+    }
+
+    fn up_from_right_and_forward(right: Vec3, forward: Vec3) -> Vec3 {
+        forward.cross(right)
     }
 }
 
@@ -29,7 +34,11 @@ pub struct RightHanded;
 impl Handedness for RightHanded {
     const FORWARD_Z_SIGN: f32 = -1.0;
 
-    fn right_handed() -> bool {
-        true
+    fn right_from_up_and_forward(up: Vec3, forward: Vec3) -> Vec3 {
+        forward.cross(up)
+    }
+
+    fn up_from_right_and_forward(right: Vec3, forward: Vec3) -> Vec3 {
+        right.cross(forward)
     }
 }

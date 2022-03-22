@@ -69,16 +69,8 @@ impl<H: Handedness> RigDriver<H> for LookAt {
         let rotation = (target - params.parent.position)
             .try_normalize()
             .and_then(|forward| {
-                // Can achieve the same by flipping signs, but I think this makes it clearer.
-                let (right, up) = if H::right_handed() {
-                    let right = forward.cross(Vec3::Y).try_normalize()?;
-                    let up = right.cross(forward);
-                    (right, up)
-                } else {
-                    let right = Vec3::Y.cross(forward).try_normalize()?;
-                    let up = forward.cross(right);
-                    (right, up)
-                };
+                let right = H::right_from_up_and_forward(Vec3::Y, forward).try_normalize()?;
+                let up = H::up_from_right_and_forward(right, forward);
                 Some(Quat::from_mat3(&Mat3::from_cols(
                     right,
                     up,
