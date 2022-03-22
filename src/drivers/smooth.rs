@@ -102,7 +102,7 @@ impl<H: Handedness> RigDriver<H> for Smooth {
         Transform {
             position,
             rotation,
-            ty: PhantomData,
+            phantom: PhantomData,
         }
     }
 }

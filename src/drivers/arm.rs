@@ -25,7 +25,7 @@ impl<H: Handedness> RigDriver<H> for Arm {
         Transform {
             rotation: params.parent.rotation,
             position: params.parent.position + params.parent.rotation * self.offset,
-            ty: PhantomData,
+            phantom: PhantomData,
         }
     }
 }

@@ -9,7 +9,7 @@ use crate::handedness::Handedness;
 pub struct Transform<H: Handedness> {
     pub position: Vec3,
     pub rotation: Quat,
-    pub ty: PhantomData<H>,
+    pub phantom: PhantomData<H>,
 }
 
 impl<H: Handedness> Transform<H> {
@@ -18,7 +18,7 @@ impl<H: Handedness> Transform<H> {
         Self {
             position,
             rotation,
-            ty: PhantomData,
+            phantom: PhantomData,
         }
     }
 
@@ -46,6 +46,6 @@ impl<H: Handedness> Transform<H> {
     pub const IDENTITY: Transform<H> = Transform {
         position: Vec3::ZERO,
         rotation: Quat::IDENTITY,
-        ty: PhantomData,
+        phantom: PhantomData,
     };
 }

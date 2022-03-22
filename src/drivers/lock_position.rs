@@ -61,7 +61,7 @@ impl<H: Handedness> RigDriver<H> for LockPosition {
         Transform {
             position: delta_pos,
             rotation: params.parent.rotation,
-            ty: PhantomData,
+            phantom: PhantomData,
         }
     }
 }

@@ -23,7 +23,7 @@ impl<H: Handedness> RigDriver<H> for Rotation {
         Transform {
             position: params.parent.position,
             rotation: self.rotation,
-            ty: PhantomData,
+            phantom: PhantomData,
         }
     }
 }

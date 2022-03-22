@@ -86,7 +86,7 @@ impl<H: Handedness> RigDriver<H> for YawPitch {
                 self.pitch_degrees.to_radians(),
                 0.0,
             ),
-            ty: PhantomData,
+            phantom: PhantomData,
         }
     }
 }

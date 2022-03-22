@@ -15,7 +15,7 @@ pub struct CameraRig<H: Handedness = RightHanded> {
     ///
     pub final_transform: Transform<H>,
 
-    ty: PhantomData<H>,
+    phantom: PhantomData<H>,
 }
 
 // Prevents user calls to `RigDriver::update`. All updates must come from `CameraRig::update`.
@@ -28,7 +28,7 @@ pub struct RigUpdateParams<'a, H: Handedness> {
     ///
     pub delta_time_seconds: f32,
 
-    ty: PhantomData<H>,
+    phantom: PhantomData<H>,
 
     _token: RigUpdateToken,
 }
@@ -61,7 +61,7 @@ impl<H: Handedness> CameraRig<H> {
             let transform = driver.update(RigUpdateParams {
                 parent: &parent_transform,
                 delta_time_seconds,
-                ty: PhantomData,
+                phantom: PhantomData,
                 _token: RigUpdateToken,
             });
 
@@ -76,7 +76,7 @@ impl<H: Handedness> CameraRig<H> {
     pub fn builder() -> CameraRigBuilder<H> {
         CameraRigBuilder {
             drivers: Default::default(),
-            ty: PhantomData,
+            phantom: PhantomData,
         }
     }
 }
@@ -84,7 +84,7 @@ impl<H: Handedness> CameraRig<H> {
 ///
 pub struct CameraRigBuilder<H: Handedness> {
     drivers: Vec<Box<dyn RigDriverTraits<H>>>,
-    ty: PhantomData<H>,
+    phantom: PhantomData<H>,
 }
 
 impl<H: Handedness> CameraRigBuilder<H> {
@@ -100,7 +100,7 @@ impl<H: Handedness> CameraRigBuilder<H> {
             drivers: self.drivers,
             // Initialize with a dummy identity transform. Will be overridden in a moment.
             final_transform: Transform::IDENTITY,
-            ty: PhantomData,
+            phantom: PhantomData,
         };
 
         // Update once to find the final transform

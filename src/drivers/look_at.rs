@@ -82,7 +82,7 @@ impl<H: Handedness> RigDriver<H> for LookAt {
         Transform {
             position: params.parent.position,
             rotation,
-            ty: PhantomData,
+            phantom: PhantomData,
         }
     }
 }
