@@ -1,7 +1,14 @@
 use std::fmt::Debug;
 
+use glam::Vec3;
+
 pub trait Handedness: Clone + Copy + Debug + 'static {
-    fn z_sign() -> f32;
+    const FORWARD_Z_SIGN: f32;
+
+    fn forward() -> Vec3 {
+        Vec3::Z * Self::FORWARD_Z_SIGN
+    }
+
     fn right_handed() -> bool;
 }
 
@@ -9,9 +16,7 @@ pub trait Handedness: Clone + Copy + Debug + 'static {
 pub struct LeftHanded {}
 
 impl Handedness for LeftHanded {
-    fn z_sign() -> f32 {
-        1.0
-    }
+    const FORWARD_Z_SIGN: f32 = 1.0;
 
     fn right_handed() -> bool {
         false
@@ -22,9 +27,7 @@ impl Handedness for LeftHanded {
 pub struct RightHanded {}
 
 impl Handedness for RightHanded {
-    fn z_sign() -> f32 {
-        -1.0
-    }
+    const FORWARD_Z_SIGN: f32 = -1.0;
 
     fn right_handed() -> bool {
         true
