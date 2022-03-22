@@ -5,16 +5,16 @@ use macroquad::prelude::*;
 
 /// A custom camera rig which combines smoothed movement with a look-at driver.
 #[derive(Debug)]
-pub struct MovableLookAt(CameraRig);
+pub struct MovableLookAt<H: Handedness>(CameraRig<H>);
 
 // Turn the nested rig into a driver, so it can be used in another rig.
-impl RigDriver for MovableLookAt {
-    fn update(&mut self, params: dolly::rig::RigUpdateParams) -> dolly::transform::Transform {
+impl<H: Handedness> RigDriver<H> for MovableLookAt<H> {
+    fn update(&mut self, params: dolly::rig::RigUpdateParams<H>) -> dolly::transform::Transform<H> {
         self.0.update(params.delta_time_seconds)
     }
 }
 
-impl MovableLookAt {
+impl<H: Handedness> MovableLookAt<H> {
     pub fn from_position_target(
         camera_position: dolly::glam::Vec3,
         target_position: dolly::glam::Vec3,
@@ -81,7 +81,7 @@ async fn main() {
 
         // Update the camera driver
         camera
-            .driver_mut::<MovableLookAt>()
+            .driver_mut::<MovableLookAt<RightHanded>>()
             .set_position_target(camera_position, player_position);
 
         // Update the camera rig, and get the interpolated transform

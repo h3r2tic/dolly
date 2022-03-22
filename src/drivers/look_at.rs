@@ -1,7 +1,10 @@
+use std::marker::PhantomData;
+
 use glam::{Mat3, Quat, Vec3};
 
 use crate::{
     driver::RigDriver,
+    handedness::Handedness,
     rig::RigUpdateParams,
     transform::Transform,
     util::{ExpSmoothed, ExpSmoothingParams},
@@ -52,8 +55,8 @@ impl LookAt {
     }
 }
 
-impl RigDriver for LookAt {
-    fn update(&mut self, params: RigUpdateParams) -> Transform {
+impl<H: Handedness> RigDriver<H> for LookAt {
+    fn update(&mut self, params: RigUpdateParams<H>) -> Transform<H> {
         let target = self.smoothed_target.exp_smooth_towards(
             &self.target,
             ExpSmoothingParams {
@@ -66,15 +69,20 @@ impl RigDriver for LookAt {
         let rotation = (target - params.parent.position)
             .try_normalize()
             .and_then(|forward| {
-                let right = forward.cross(Vec3::Y).try_normalize()?;
-                let up = right.cross(forward);
-                Some(Quat::from_mat3(&Mat3::from_cols(right, up, -forward)))
+                let right = H::right_from_up_and_forward(Vec3::Y, forward).try_normalize()?;
+                let up = H::up_from_right_and_forward(right, forward);
+                Some(Quat::from_mat3(&Mat3::from_cols(
+                    right,
+                    up,
+                    forward * H::FORWARD_Z_SIGN,
+                )))
             })
             .unwrap_or_default();
 
         Transform {
             position: params.parent.position,
             rotation,
+            phantom: PhantomData,
         }
     }
 }

@@ -1,7 +1,10 @@
+use std::marker::PhantomData;
+
 use glam::{Quat, Vec3};
 
 use crate::{
     driver::RigDriver,
+    handedness::Handedness,
     rig::RigUpdateParams,
     transform::Transform,
     util::{ExpSmoothed, ExpSmoothingParams},
@@ -76,8 +79,8 @@ impl Smooth {
     }
 }
 
-impl RigDriver for Smooth {
-    fn update(&mut self, params: RigUpdateParams) -> Transform {
+impl<H: Handedness> RigDriver<H> for Smooth {
+    fn update(&mut self, params: RigUpdateParams<H>) -> Transform<H> {
         let position = self.smoothed_position.exp_smooth_towards(
             &params.parent.position,
             ExpSmoothingParams {
@@ -96,6 +99,10 @@ impl RigDriver for Smooth {
             },
         );
 
-        Transform { position, rotation }
+        Transform {
+            position,
+            rotation,
+            phantom: PhantomData,
+        }
     }
 }
