@@ -39,7 +39,7 @@ impl<H: Handedness> Transform<H> {
 
     /// +/-Z
     pub fn forward(&self) -> Vec3 {
-        self.rotation * H::forward()
+        self.rotation * H::FORWARD
     }
 
     ///
