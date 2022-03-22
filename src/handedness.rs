@@ -13,7 +13,7 @@ pub trait Handedness: Clone + Copy + Debug + 'static {
 }
 
 #[derive(Clone, Copy, Debug)]
-pub struct LeftHanded {}
+pub struct LeftHanded;
 
 impl Handedness for LeftHanded {
     const FORWARD_Z_SIGN: f32 = 1.0;
@@ -24,7 +24,7 @@ impl Handedness for LeftHanded {
 }
 
 #[derive(Clone, Copy, Debug)]
-pub struct RightHanded {}
+pub struct RightHanded;
 
 impl Handedness for RightHanded {
     const FORWARD_Z_SIGN: f32 = -1.0;
