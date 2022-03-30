@@ -12,7 +12,7 @@
 //! ```
 //! use dolly::prelude::*;
 
-//! let mut camera = CameraRig::builder()
+//! let mut camera: CameraRig = CameraRig::builder()
 //!     .with(Position::new(glam::Vec3::ZERO))
 //!     .with(YawPitch::new())
 //!     .with(Smooth::new_position_rotation(1.0, 1.0))
