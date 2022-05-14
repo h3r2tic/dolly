@@ -15,7 +15,7 @@ pub struct CameraRig<H: Handedness = RightHanded> {
     ///
     pub final_transform: Transform<H>,
 
-    phantom: PhantomData<H>,
+    pub phantom: PhantomData<H>,
 }
 
 // Prevents user calls to `RigDriver::update`. All updates must come from `CameraRig::update`.
