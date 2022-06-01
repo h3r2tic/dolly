@@ -1,13 +1,13 @@
 use std::marker::PhantomData;
 
-use glam::{Mat3, Quat, Vec3};
+use glam::Vec3;
 
 use crate::{
     driver::RigDriver,
     handedness::Handedness,
     rig::RigUpdateParams,
     transform::Transform,
-    util::{ExpSmoothed, ExpSmoothingParams},
+    util::{look_at, ExpSmoothed, ExpSmoothingParams},
 };
 
 /// Rotates the camera to point at a world-space position.
@@ -66,18 +66,7 @@ impl<H: Handedness> RigDriver<H> for LookAt {
             },
         );
 
-        let rotation = (target - params.parent.position)
-            .try_normalize()
-            .and_then(|forward| {
-                let right = H::right_from_up_and_forward(Vec3::Y, forward).try_normalize()?;
-                let up = H::up_from_right_and_forward(right, forward);
-                Some(Quat::from_mat3(&Mat3::from_cols(
-                    right,
-                    up,
-                    forward * H::FORWARD_Z_SIGN,
-                )))
-            })
-            .unwrap_or_default();
+        let rotation = look_at::<H>(target - params.parent.position);
 
         Transform {
             position: params.parent.position,

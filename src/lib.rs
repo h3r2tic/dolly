@@ -37,7 +37,6 @@ pub mod handedness;
 pub mod prelude;
 pub mod rig;
 pub mod transform;
-
-mod util;
+pub mod util;
 
 pub use glam;
