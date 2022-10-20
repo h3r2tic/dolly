@@ -51,6 +51,23 @@ impl<H: Handedness> CameraRig<H> {
             .find_map(|driver| driver.as_mut().as_any_mut().downcast_mut::<T>())
     }
 
+    /// Returns the first driver of the matching type. Panics if no such driver is present.
+    pub fn driver<T: RigDriver<H>>(&self) -> &T {
+        self.try_driver::<T>().unwrap_or_else(|| {
+            panic!(
+                "No {} driver found in the CameraRig",
+                std::any::type_name::<T>()
+            )
+        })
+    }
+
+    /// Returns the Some with the first driver of the matching type, or `None` if no such driver is present.
+    pub fn try_driver<T: RigDriver<H>>(&self) -> Option<&T> {
+        self.drivers
+            .iter()
+            .find_map(|driver| driver.as_ref().as_any().downcast_ref::<T>())
+    }
+
     /// Runs all the drivers in sequence, animating the rig, and producing a final transform of the camera.
     ///
     /// Camera rigs are approximately framerate independent, so `update` can be called at any frequency.
