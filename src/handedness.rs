@@ -4,11 +4,7 @@ use glam::Vec3;
 
 pub trait Handedness: Clone + Copy + Debug + 'static {
     const FORWARD_Z_SIGN: f32;
-    // `glam::const_vec3!` is deprecated  since 0.21 and to be replaced with
-    // `glam::Vec3::new(0.0, 0.0, Self::FORWARD_Z_SIGN)`. Consider replacing
-    // it when bumping glam's minimum version to 0.21.
-    #[allow(deprecated)]
-    const FORWARD: Vec3 = glam::const_vec3!([0.0, 0.0, Self::FORWARD_Z_SIGN]);
+    const FORWARD: Vec3 = glam::vec3(0.0, 0.0, Self::FORWARD_Z_SIGN);
 
     fn right_from_up_and_forward(up: Vec3, forward: Vec3) -> Vec3;
     fn up_from_right_and_forward(right: Vec3, forward: Vec3) -> Vec3;
