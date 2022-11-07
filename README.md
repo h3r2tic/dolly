@@ -2,7 +2,7 @@
 
 [![Crates.io](https://img.shields.io/crates/v/dolly.svg)](https://crates.io/crates/dolly)
 [![Docs](https://docs.rs/dolly/badge.svg)](https://docs.rs/dolly)
-[![Rust 1.58.1](https://img.shields.io/badge/Rust-1.58.1-fc8d62?logo=rust)](https://github.com/rust-lang/rust/blob/master/RELEASES.md#version-1581-2022-01-19)
+[![Rust 1.60](https://img.shields.io/badge/Rust-1.60-fc8d62?logo=rust)](https://github.com/rust-lang/rust/blob/master/RELEASES.md#version-1600-2022-04-07)
 
 Combine simple building blocks to create smooth cameras: first-person, chase, orbit, look-at, you name it!
 
@@ -12,7 +12,7 @@ While cameras are a complex topic in gamedev, this crate only provides the basic
 
 ## Examples
 
-https://user-images.githubusercontent.com/16522064/125960266-fc96b302-6d6b-4976-b38c-b6f4fdb8e09b.mp4
+<https://user-images.githubusercontent.com/16522064/125960266-fc96b302-6d6b-4976-b38c-b6f4fdb8e09b.mp4>
 
 ```rust
 let mut camera = CameraRig::builder()
@@ -36,7 +36,7 @@ camera.update(time_delta_seconds);
 
 ---
 
-https://user-images.githubusercontent.com/16522064/125960227-7ee05c04-f47a-4c32-b494-cc36dc70ab63.mp4
+<https://user-images.githubusercontent.com/16522064/125960227-7ee05c04-f47a-4c32-b494-cc36dc70ab63.mp4>
 
 ```rust
 let mut camera = CameraRig::builder()
@@ -61,7 +61,7 @@ camera.driver_mut::<LookAt>().target = car.position + Vec3::Y;
 
 ---
 
-https://user-images.githubusercontent.com/16522064/125986386-60cb9d26-06a2-4d3f-9377-56c982fbc7f9.mp4
+<https://user-images.githubusercontent.com/16522064/125986386-60cb9d26-06a2-4d3f-9377-56c982fbc7f9.mp4>
 
 ```rust
 let mut camera = CameraRig::builder()
@@ -77,7 +77,7 @@ camera.update(time_delta_seconds);
 
 ---
 
-https://user-images.githubusercontent.com/16522064/125986405-a06f6572-702a-4c1a-a6c7-edf5ba2ed815.mp4
+<https://user-images.githubusercontent.com/16522064/125986405-a06f6572-702a-4c1a-a6c7-edf5ba2ed815.mp4>
 
 ```rust
 let mut camera = CameraRig::builder()
