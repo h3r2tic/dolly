@@ -1,0 +1,68 @@
+on: [push, pull_request]
+
+name: CI
+
+jobs:
+  clippy:
+    name: Clippy
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+          components: clippy
+      - uses: actions-rs/cargo@v1
+        with:
+          command: clippy
+          args: --workspace --all-targets -- -D warnings
+
+  fmt:
+    name: Rustfmt
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+          components: rustfmt
+      - uses: actions-rs/cargo@v1
+        with:
+          command: fmt
+          args: --all -- --check
+
+  doc:
+    name: Build documentation
+    runs-on: ubuntu-latest
+    env:
+      RUSTDOCFLAGS: -Dwarnings
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+      - name: Build documentation
+        uses: actions-rs/cargo@v1
+        with:
+          command: doc
+          args: --no-deps --workspace --all-features --document-private-items
+
+  check_msrv:
+    name: Check MSRV (1.58.1)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: dtolnay/rust-toolchain@1.58.1
+      - uses: actions-rs/cargo@v1
+        with:
+          command: check
+          args: --workspace --all-targets --all-features
