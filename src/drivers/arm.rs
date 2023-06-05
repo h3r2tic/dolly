@@ -1,6 +1,6 @@
 use std::marker::PhantomData;
 
-use glam::Vec3;
+use glam::{Quat, Vec3};
 
 use crate::{
     driver::RigDriver, handedness::Handedness, rig::RigUpdateParams, transform::Transform,
@@ -10,21 +10,32 @@ use crate::{
 #[derive(Debug)]
 pub struct Arm {
     ///
-    pub offset: Vec3,
+    pub offset: mint::Vector3<f32>,
 }
 
 impl Arm {
     ///
-    pub fn new(offset: Vec3) -> Self {
+    pub fn new<V>(offset: V) -> Self
+    where
+        V: Into<mint::Vector3<f32>>,
+    {
+        let offset = offset.into().into();
+
         Self { offset }
     }
 }
 
 impl<H: Handedness> RigDriver<H> for Arm {
     fn update(&mut self, params: RigUpdateParams<H>) -> Transform<H> {
+        let parent_position: Vec3 = params.parent.position.into();
+        let parent_rotation: Quat = params.parent.rotation.into();
+        let offset: Vec3 = self.offset.into();
+
+        let position = parent_position + parent_rotation * offset;
+
         Transform {
             rotation: params.parent.rotation,
-            position: params.parent.position + params.parent.rotation * self.offset,
+            position: position.into(),
             phantom: PhantomData,
         }
     }

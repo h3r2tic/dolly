@@ -7,13 +7,26 @@ use crate::{
 };
 
 /// Directly sets the rotation of the camera
-#[derive(Default, Debug)]
+#[derive(Debug)]
 pub struct Rotation {
-    pub rotation: Quat,
+    pub rotation: mint::Quaternion<f32>,
+}
+
+impl Default for Rotation {
+    fn default() -> Self {
+        Self {
+            rotation: Quat::default().into(),
+        }
+    }
 }
 
 impl Rotation {
-    pub fn new(rotation: Quat) -> Self {
+    pub fn new<Q>(rotation: Q) -> Self
+    where
+        Q: Into<mint::Quaternion<f32>>,
+    {
+        let rotation = rotation.into().into();
+
         Self { rotation }
     }
 }

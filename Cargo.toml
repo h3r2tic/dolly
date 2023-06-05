@@ -12,7 +12,8 @@ readme = "crates-io.md"
 rust-version = "1.60"
 
 [dependencies]
-glam = ">=0.21, <=0.24"
+glam = { version = ">=0.21, <=0.24", features = ["mint"] }
+mint = "0.5.9"
 
 [dev-dependencies]
 macroquad = "0.3"

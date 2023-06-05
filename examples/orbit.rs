@@ -1,7 +1,16 @@
 // Based on https://github.com/not-fl3/macroquad/blob/97a99d00155cb7531f4432a2eb5f3c587e22f9b3/examples/3d.rs
 
 use dolly::prelude::*;
-use macroquad::prelude::*;
+use macroquad::{
+    prelude::{
+        draw_cube, draw_cube_wires, draw_grid, draw_sphere, is_key_pressed, set_camera,
+        set_default_camera, vec3, Camera3D, KeyCode, BLACK, BLUE, DARKBLUE, DARKGREEN, GRAY,
+        LIGHTGRAY, WHITE, YELLOW,
+    },
+    text::draw_text,
+    time::get_frame_time,
+    window::{clear_background, next_frame},
+};
 
 #[macroquad::main("dolly orbit example")]
 async fn main() {
@@ -9,7 +18,7 @@ async fn main() {
     let mut camera: CameraRig = CameraRig::builder()
         .with(YawPitch::new().yaw_degrees(45.0).pitch_degrees(-30.0))
         .with(Smooth::new_rotation(1.5))
-        .with(Arm::new(dolly::glam::Vec3::Z * 8.0))
+        .with(Arm::new(glam::Vec3::Z * 8.0))
         .build();
 
     loop {
@@ -30,8 +39,11 @@ async fn main() {
         // the two different `glam` versions to talk to each other.
         set_camera(&Camera3D {
             position: <[f32; 3]>::from(camera_xform.position).into(),
-            up: <[f32; 3]>::from(camera_xform.up()).into(),
-            target: <[f32; 3]>::from(camera_xform.position + camera_xform.forward()).into(),
+            up: <[f32; 3]>::from(camera_xform.up::<glam::Vec3>()).into(),
+            target: <[f32; 3]>::from(
+                glam::Vec3::from(camera_xform.position) + camera_xform.forward::<glam::Vec3>(),
+            )
+            .into(),
             ..Default::default()
         });
 

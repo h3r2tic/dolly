@@ -38,5 +38,3 @@ pub mod prelude;
 pub mod rig;
 pub mod transform;
 pub mod util;
-
-pub use glam;
