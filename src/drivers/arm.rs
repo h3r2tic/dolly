@@ -19,7 +19,7 @@ impl Arm {
     where
         V: Into<mint::Vector3<f32>>,
     {
-        let offset = offset.into().into();
+        let offset = offset.into();
 
         Self { offset }
     }

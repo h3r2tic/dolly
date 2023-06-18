@@ -154,6 +154,14 @@ impl DollyToMacroquad for mint::Vector3<f32> {
     }
 }
 
+impl DollyToMacroquad for mint::Point3<f32> {
+    type Target = Vec3;
+
+    fn d2m(self) -> Self::Target {
+        <[f32; 3]>::from(self).into()
+    }
+}
+
 fn get_move_input() -> glam::Vec3 {
     const SPEED: f32 = 0.05;
 

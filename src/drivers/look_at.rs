@@ -19,7 +19,7 @@ pub struct LookAt {
     pub smoothness: f32,
 
     /// The world-space position to look at
-    pub target: mint::Vector3<f32>,
+    pub target: mint::Point3<f32>,
 
     // The scale with which smoothing should be applied to the target position
     output_offset_scale: f32,
@@ -29,11 +29,11 @@ pub struct LookAt {
 
 impl LookAt {
     ///
-    pub fn new<V>(target: V) -> Self
+    pub fn new<P>(target: P) -> Self
     where
-        V: Into<mint::Vector3<f32>>,
+        P: Into<mint::Point3<f32>>,
     {
-        let target = target.into().into();
+        let target = target.into();
 
         Self {
             smoothness: 0.0,

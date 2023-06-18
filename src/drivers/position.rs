@@ -9,7 +9,7 @@ use crate::{
 /// Directly sets the position of the camera
 #[derive(Debug)]
 pub struct Position {
-    pub position: mint::Vector3<f32>,
+    pub position: mint::Point3<f32>,
 }
 
 impl Default for Position {
@@ -22,9 +22,9 @@ impl Default for Position {
 
 impl Position {
     ///
-    pub fn new<V>(position: V) -> Self
+    pub fn new<P>(position: P) -> Self
     where
-        V: Into<mint::Vector3<f32>>,
+        P: Into<mint::Point3<f32>>,
     {
         let position = position.into();
 

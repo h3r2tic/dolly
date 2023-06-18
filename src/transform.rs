@@ -4,19 +4,19 @@ use std::marker::PhantomData;
 
 use crate::handedness::Handedness;
 
-/// A thin wrapper over a `Vector3<f32>` and a `Quaternion<f32>`
+/// A thin wrapper over a `Point3<f32>` and a `Quaternion<f32>`
 #[derive(Clone, Copy, Debug)]
 pub struct Transform<H: Handedness> {
-    pub position: mint::Vector3<f32>,
+    pub position: mint::Point3<f32>,
     pub rotation: mint::Quaternion<f32>,
     pub phantom: PhantomData<H>,
 }
 
 impl<H: Handedness> Transform<H> {
     ///
-    pub fn from_position_rotation<V, Q>(position: V, rotation: Q) -> Self
+    pub fn from_position_rotation<P, Q>(position: P, rotation: Q) -> Self
     where
-        V: Into<mint::Vector3<f32>>,
+        P: Into<mint::Point3<f32>>,
         Q: Into<mint::Quaternion<f32>>,
     {
         let position = position.into();
@@ -30,9 +30,9 @@ impl<H: Handedness> Transform<H> {
     }
 
     ///
-    pub fn into_position_rotation<V, Q>(self) -> (V, Q)
+    pub fn into_position_rotation<P, Q>(self) -> (P, Q)
     where
-        V: From<mint::Vector3<f32>>,
+        P: From<mint::Point3<f32>>,
         Q: From<mint::Quaternion<f32>>,
     {
         (From::from(self.position), From::from(self.rotation))
@@ -67,7 +67,7 @@ impl<H: Handedness> Transform<H> {
 
     ///
     pub const IDENTITY: Transform<H> = Transform {
-        position: mint::Vector3 {
+        position: mint::Point3 {
             x: 0.0,
             y: 0.0,
             z: 0.0,

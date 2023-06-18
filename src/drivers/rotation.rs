@@ -25,7 +25,7 @@ impl Rotation {
     where
         Q: Into<mint::Quaternion<f32>>,
     {
-        let rotation = rotation.into().into();
+        let rotation = rotation.into();
 
         Self { rotation }
     }
