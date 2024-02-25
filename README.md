@@ -15,7 +15,7 @@ While cameras are a complex topic in gamedev, this crate only provides the basic
 <https://user-images.githubusercontent.com/16522064/125960266-fc96b302-6d6b-4976-b38c-b6f4fdb8e09b.mp4>
 
 ```rust
-let mut camera = CameraRig::builder()
+let mut camera: CameraRig = CameraRig::builder()
     .with(YawPitch::new().yaw_degrees(45.0).pitch_degrees(-30.0))
     .with(Smooth::new_rotation(1.5))
     .with(Arm::new(Vec3::Z * 4.0))
@@ -39,7 +39,7 @@ camera.update(time_delta_seconds);
 <https://user-images.githubusercontent.com/16522064/125960227-7ee05c04-f47a-4c32-b494-cc36dc70ab63.mp4>
 
 ```rust
-let mut camera = CameraRig::builder()
+let mut camera: CameraRig = CameraRig::builder()
     .with(Position::new(car.position))
     .with(Rotation::new(car.rotation))
     .with(Smooth::new_position(1.25).predictive(true))
@@ -54,9 +54,9 @@ let mut camera = CameraRig::builder()
 
 // ...
 
-camera.driver_mut::<Position>().position = car.position;
-camera.driver_mut::<Rotation>().rotation = car.rotation;
-camera.driver_mut::<LookAt>().target = car.position + Vec3::Y;
+camera.driver_mut::<Position>().position = car.position.into();
+camera.driver_mut::<Rotation>().rotation = car.rotation.into();
+camera.driver_mut::<LookAt>().target = (car.position + Vec3::Y).into();
 ```
 
 ---
@@ -64,14 +64,14 @@ camera.driver_mut::<LookAt>().target = car.position + Vec3::Y;
 <https://user-images.githubusercontent.com/16522064/125986386-60cb9d26-06a2-4d3f-9377-56c982fbc7f9.mp4>
 
 ```rust
-let mut camera = CameraRig::builder()
+let mut camera: CameraRig = CameraRig::builder()
     .with(Position::new(Vec3::Y * 3.0))
     .with(LookAt::new(car.position))
     .build();
 
 // ...
 
-camera.driver_mut::<LookAt>().target = car.position;
+camera.driver_mut::<LookAt>().target = car.position.into();
 camera.update(time_delta_seconds);
 ```
 
@@ -80,7 +80,7 @@ camera.update(time_delta_seconds);
 <https://user-images.githubusercontent.com/16522064/125986405-a06f6572-702a-4c1a-a6c7-edf5ba2ed815.mp4>
 
 ```rust
-let mut camera = CameraRig::builder()
+let mut camera: CameraRig = CameraRig::builder()
     .with(Position::new(Vec3::Y))
     .with(YawPitch::new())
     .with(Smooth::new_position_rotation(1.0, 1.0))

@@ -14,7 +14,7 @@ While cameras are a complex topic in gamedev, this crate only provides the basic
 ![orbit camera example](https://oxn9dw.db.files.1drv.com/y4m_cv-3paMLNbYajhGOWPvn172gkHhrOUzmaPXUo8JgZgiFYrygLrt9IrUXXcsoTNf2naYm4Qg-V5JzRSRgwK3-u0bj348uKXUYq8k6ntGWiYpDPMl61P-v42YSFL7lr-IMedLAGheJP54tRBzElRwz4bSzxHdHPJIkXYuBbzmAFEhbX1yHl8uHTGedeHUgnJj0qbMI7fgH9VXNUKzUVaZpw/orbit.gif?download&psid=1)
 
 ```rust
-let mut camera = CameraRig::builder()
+let mut camera: CameraRig = CameraRig::builder()
     .with(YawPitch::new().yaw_degrees(45.0).pitch_degrees(-30.0))
     .with(Smooth::new_rotation(1.5))
     .with(Arm::new(Vec3::Z * 4.0))
