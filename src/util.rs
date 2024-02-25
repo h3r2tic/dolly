@@ -54,11 +54,18 @@ impl<T: Interpolate + Copy + std::fmt::Debug> ExpSmoothed<T> {
     }
 }
 
-pub fn look_at<H: Handedness>(forward: Vec3) -> Quat {
-    forward
+pub fn look_at<H: Handedness, V, Q>(forward: V) -> Q
+where
+    V: Into<mint::Vector3<f32>>,
+    Q: From<mint::Quaternion<f32>>,
+{
+    let forward: Vec3 = forward.into().into();
+
+    let result = forward
         .try_normalize()
         .and_then(|forward| {
-            let right = H::right_from_up_and_forward(Vec3::Y, forward).try_normalize()?;
+            let right =
+                H::right_from_up_and_forward::<Vec3, Vec3>(Vec3::Y, forward).try_normalize()?;
             let up = H::up_from_right_and_forward(right, forward);
             Some(Quat::from_mat3(&Mat3::from_cols(
                 right,
@@ -66,5 +73,7 @@ pub fn look_at<H: Handedness>(forward: Vec3) -> Quat {
                 forward * H::FORWARD_Z_SIGN,
             )))
         })
-        .unwrap_or_default()
+        .unwrap_or_default();
+
+    From::from(result.into())
 }
