@@ -1,6 +1,6 @@
 [package]
 name = "dolly"
-version = "0.4.2"
+version = "0.4.3"
 edition = "2021"
 license = "MIT OR Apache-2.0"
 description = "Composable camera rigs"
@@ -12,7 +12,7 @@ readme = "crates-io.md"
 rust-version = "1.60"
 
 [dependencies]
-glam = { version = ">=0.21, <=0.24", features = ["mint"] }
+glam = { version = ">=0.21, <=0.25", features = ["mint"] }
 mint = "0.5.9"
 
 [dev-dependencies]
