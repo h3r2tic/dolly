@@ -16,4 +16,4 @@ glam = { version = ">=0.21, <=0.25", features = ["mint"] }
 mint = "0.5.8"
 
 [dev-dependencies]
-macroquad = "0.3"
+macroquad = "0.4"
