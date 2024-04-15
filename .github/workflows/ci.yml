@@ -11,32 +11,16 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
-          override: true
-          components: clippy
-      - uses: actions-rs/cargo@v1
-        with:
-          command: clippy
-          args: --workspace --all-targets -- -D warnings
+      - uses: dtolnay/rust-toolchain@stable
+      - run: cargo clippy --workspace --all-targets -- -D warnings
 
   fmt:
     name: Rustfmt
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
-          override: true
-          components: rustfmt
-      - uses: actions-rs/cargo@v1
-        with:
-          command: fmt
-          args: --all -- --check
+      - uses: dtolnay/rust-toolchain@stable
+      - run: cargo fmt --all -- --check
 
   doc:
     name: Build documentation
@@ -45,16 +29,9 @@ jobs:
       RUSTDOCFLAGS: -Dwarnings
     steps:
       - uses: actions/checkout@v4
-      - uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
-          override: true
+      - uses: dtolnay/rust-toolchain@stable
       - name: Build documentation
-        uses: actions-rs/cargo@v1
-        with:
-          command: doc
-          args: --no-deps --workspace --all-features --document-private-items
+        run: cargo doc --no-deps --workspace --all-features --document-private-items
 
   check_msrv:
     name: Check MSRV (1.60)
@@ -62,7 +39,4 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@1.60
-      - uses: actions-rs/cargo@v1
-        with:
-          command: check
-          args: --workspace --all-features
+      - run: cargo check --workspace --all-features
