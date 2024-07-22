@@ -34,9 +34,9 @@ jobs:
         run: cargo doc --no-deps --workspace --all-features --document-private-items
 
   check_msrv:
-    name: Check MSRV (1.60)
+    name: Check MSRV (1.68.2)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@1.60
+      - uses: dtolnay/rust-toolchain@1.68.2
       - run: cargo check --workspace --all-features

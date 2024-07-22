@@ -2,7 +2,7 @@
 
 [![Crates.io](https://img.shields.io/crates/v/dolly.svg)](https://crates.io/crates/dolly)
 [![Docs](https://docs.rs/dolly/badge.svg)](https://docs.rs/dolly)
-[![Rust 1.60](https://img.shields.io/badge/Rust-1.60-fc8d62?logo=rust)](https://github.com/rust-lang/rust/blob/master/RELEASES.md#version-1600-2022-04-07)
+[![Rust 1.68.2](https://img.shields.io/badge/Rust-1.68.2-blue?logo=rust)](https://github.com/rust-lang/rust/blob/master/RELEASES.md#version-1682-2023-03-28)
 
 Combine simple building blocks to create smooth cameras: first-person, chase, orbit, look-at, you name it!
 

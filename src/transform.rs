@@ -13,7 +13,6 @@ pub struct Transform<H: Handedness> {
 }
 
 impl<H: Handedness> Transform<H> {
-    ///
     pub fn from_position_rotation<P, Q>(position: P, rotation: Q) -> Self
     where
         P: Into<mint::Point3<f32>>,
@@ -29,7 +28,6 @@ impl<H: Handedness> Transform<H> {
         }
     }
 
-    ///
     pub fn into_position_rotation<P, Q>(self) -> (P, Q)
     where
         P: From<mint::Point3<f32>>,
@@ -65,7 +63,6 @@ impl<H: Handedness> Transform<H> {
         From::from((rotation * H::FORWARD).into())
     }
 
-    ///
     pub const IDENTITY: Transform<H> = Transform {
         position: mint::Point3 {
             x: 0.0,

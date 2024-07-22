@@ -21,7 +21,6 @@ impl Default for Position {
 }
 
 impl Position {
-    ///
     pub fn new<P>(position: P) -> Self
     where
         P: Into<mint::Point3<f32>>,

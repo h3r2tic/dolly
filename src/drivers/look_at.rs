@@ -28,7 +28,6 @@ pub struct LookAt {
 }
 
 impl LookAt {
-    ///
     pub fn new<P>(target: P) -> Self
     where
         P: Into<mint::Point3<f32>>,

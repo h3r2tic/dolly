@@ -9,7 +9,7 @@ documentation = "https://docs.rs/dolly"
 keywords = ["gamedev", "camera", "3d"]
 categories = ["game-development"]
 readme = "crates-io.md"
-rust-version = "1.60"
+rust-version = "1.68.2"
 
 [dependencies]
 glam = { version = ">=0.21, <=0.28", features = ["mint"] }
