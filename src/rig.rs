@@ -9,23 +9,16 @@ use std::marker::PhantomData;
 /// A chain of drivers, calculating displacements, and animating in succession.
 #[derive(Debug)]
 pub struct CameraRig<H: Handedness = RightHanded> {
-    ///
     pub drivers: Vec<Box<dyn RigDriverTraits<H>>>,
-
-    ///
     pub final_transform: Transform<H>,
-
     phantom: PhantomData<H>,
 }
 
 // Prevents user calls to `RigDriver::update`. All updates must come from `CameraRig::update`.
 struct RigUpdateToken;
 
-///
 pub struct RigUpdateParams<'a, H: Handedness> {
-    ///
     pub parent: &'a Transform<H>,
-    ///
     pub delta_time_seconds: f32,
 
     phantom: PhantomData<H>,
@@ -98,20 +91,17 @@ impl<H: Handedness> CameraRig<H> {
     }
 }
 
-///
 pub struct CameraRigBuilder<H: Handedness> {
     drivers: Vec<Box<dyn RigDriverTraits<H>>>,
     phantom: PhantomData<H>,
 }
 
 impl<H: Handedness> CameraRigBuilder<H> {
-    ///
     pub fn with(mut self, driver: impl RigDriverTraits<H>) -> Self {
         self.drivers.push(Box::new(driver));
         self
     }
 
-    ///
     pub fn build(self) -> CameraRig<H> {
         let mut rig = CameraRig {
             drivers: self.drivers,
